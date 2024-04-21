@@ -1,0 +1,14 @@
+{
+  "bug": {
+    "name": "Bug",
+    "color": "red"
+  },
+  "sg": {
+    "name": "Suggestion",
+    "color": "orange"
+  },
+  "a_b": {
+    "name": "Base Aperture",
+    "color": "blue"
+  }
+}

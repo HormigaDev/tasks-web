@@ -1,0 +1,29 @@
+#t-tasks-content {
+  padding: 0 12px;
+  overflow-y: auto;
+  height: 100%;
+  width: 100%;
+}
+.t-task {
+  background-color: $bg-lvl-4;
+}
+.t-tasks-task {
+  z-index: 999;
+}
+.t-tasks-task-close {
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin: 32px 16px;
+  cursor: pointer;
+}
+.t-task-card {
+  background-color: $bg-lvl-5;
+  padding-right: 64px;
+  padding-left: 64px;
+}
+.t-tasks-task-options {
+  position: absolute;
+  top: 48px;
+  left: 12px;
+}

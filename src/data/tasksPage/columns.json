@@ -1,0 +1,21 @@
+[
+  {
+    "name": "description",
+    "align": "center",
+    "label": "Description",
+    "field": "description",
+    "sortable": true
+  },
+  {
+    "name": "category",
+    "label": "Category",
+    "field": "category",
+    "sortable": true
+  },
+  {
+    "name": "priority",
+    "label": "Priority",
+    "field": "priority",
+    "sortable": true
+  }
+]

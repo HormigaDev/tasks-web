@@ -1,0 +1,15 @@
+.t-tab-panels {
+  background-color: $bg-lvl-3;
+}
+.t-settings {
+  .q-splitter__separator,
+  .q-splitter__separator-area {
+    pointer-events: none;
+  }
+}
+.t-account-input {
+  min-width: 320px;
+}
+.t-settings-select {
+  min-width: 220px;
+}

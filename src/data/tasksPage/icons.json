@@ -1,0 +1,18 @@
+{
+  "urgent": {
+    "name": "error",
+    "color": "red"
+  },
+  "high": {
+    "name": "warning",
+    "color": "orange"
+  },
+  "normal": {
+    "name": "info",
+    "color": "blue"
+  },
+  "low": {
+    "name": "success",
+    "color": "green"
+  }
+}
