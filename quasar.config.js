@@ -37,6 +37,7 @@ module.exports = configure(function (/* ctx */) {
       "pages/calendar.scss",
       "pages/affairs.scss",
       "pages/settings.scss",
+      "pages/login.scss",
     ],
 
     // https://github.com/quasarframework/quasar/tree/dev/extras

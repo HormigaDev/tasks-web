@@ -6,19 +6,37 @@
         @update:show="showForm = $event"
         @update:save="saveTask"
       />
+      <CategoriesComponent
+        :show="showNewCategoryForm"
+        @update:show="showNewCategoryForm = $event"
+      />
       <QuasarTableComponent
         @update:newtask="showNewTaskForm"
         @update:archivetask="archivedTaskHandler"
         @update:deletetask="deletedTaskHandler"
         @update:showtask="handleShowTask"
-        @update:tasks="tasks = $event"
-        :_rows="tasks"
+        @update:newcategory="showNewCategoryForm = $event"
       />
       <TaskComponent
         :task="task"
-        @update:show="showTask = $event"
+        @update:show="showTask = false"
+        @update:edittask="
+          () => {
+            showForm = true;
+            showTask = false;
+          }
+        "
         :show="showTask"
       />
+      <q-btn
+        color="grey-7"
+        dark
+        size="md"
+        class="fixed-bottom-right q-mr-md q-mb-md"
+        @click="showFixedTasks"
+      >
+        <i class="fa fa-thumbtack" style="transform: rotate(45deg)"></i
+      ></q-btn>
     </div>
   </q-page>
 </template>
@@ -29,6 +47,8 @@ import { useQuasar } from "quasar";
 import QuasarTableComponent from "src/components/QuasarTableComponent.vue";
 import NewTaskComponent from "src/components/NewTaskComponent.vue";
 import TaskComponent from "src/components/TaskComponent.vue";
+import CategoriesComponent from "src/components/CategoriesComponent.vue";
+import EventBus from "src/functions/EventBus";
 
 import rows from "src/data/tasksPage/rows.json";
 
@@ -87,12 +107,14 @@ export default defineComponent({
       },
       task: ref({}),
       tasks: ref(rows),
+      showNewCategoryForm: ref(false),
     };
   },
   components: {
     QuasarTableComponent,
     NewTaskComponent,
     TaskComponent,
+    CategoriesComponent,
   },
   methods: {
     showNewTaskForm() {
@@ -121,6 +143,9 @@ export default defineComponent({
     handleShowTask(task) {
       this.task = task;
       this.showTask = true;
+    },
+    showFixedTasks() {
+      EventBus.emit("show-fixed-tasks");
     },
   },
 });

@@ -13,6 +13,7 @@
       :task="task"
       :show="showTask"
       @update:show="showTask = $event"
+      @update:edittask="editTask"
     />
     <NewTaskComponent
       :show="showNewTask"
@@ -44,54 +45,50 @@
           :key="i"
           :class="
             ('0' + day).slice(-2) === ('0' + date.day).slice(-2) &&
-            new Date().getMonth() === date.month &&
-            new Date().getFullYear() === date.year
+            now.getMonth() === date.month &&
+            now.getFullYear() === date.year
               ? 'calendar-day calendar-day-now'
               : 'calendar-day' + (day === '' ? ' calendar-day-empty' : '')
           "
-          @click="showTasksData(day)"
+          @click="day !== '' ? showTasksData(day) : null"
         >
           <small
             :class="'calendar-id ' + (isWeekend(day) ? 'calendar-weekend' : '')"
             >{{ day }}</small
           >
-          {{ (data = searchInDay(day)) ? "" : "" }}
           <div
-            v-if="data.tasks.length > 0 || data.number > 0"
-            class="flex column justify-end"
+            class="calendar-tasks flex column justify-end q-pl-sm q-pr-sm"
             style="height: 100%"
           >
             <div
-              v-for="(task, i) in data.tasks"
-              :key="i"
-              class="flex q-mb-xs q-pl-sm"
+              v-for="task in searchInDay(day).tasks"
+              :key="task.id + date.month"
+              class="calendar-task row full-width flex justify-between flex-center"
             >
               <q-badge
-                :label="task.name"
-                style="
-                  overflow: hidden;
-                  text-overflow: ellipsis;
-                  white-space: nowrap;
+                :label="task.title.substring(0, 20) + '...'"
+                :class="
+                  'full-width q-mt-xs q-mb-xs bg-' +
+                  getColor(task.runDate, task.status)
                 "
-                class="calendar-badge q-mr-xs"
-                :color="task.color"
+                v-if="canActualize"
+                style="overflow: hidden; max-width: 85%"
               />
               <q-icon
-                :name="task.icon"
-                class="q-ml-xs"
-                :color="task.iconColor"
-                v-if="task.status !== 'ended'"
-              />
-              <q-icon
-                name="check"
-                style="color: green"
-                v-if="task.status === 'ended'"
-                class="q-ml-xs"
+                size="xs"
+                :name="
+                  task.status === 'ended' ? 'check' : task.categories[0].icon
+                "
+                v-if="canActualize"
+                :color="task.status === 'ended' ? 'green-5' : 'white'"
               />
             </div>
-            <small class="text-right q-pr-sm" v-if="data.number > 0"
-              >+{{ data.number }} tasks</small
+            <div
+              v-if="searchInDay(day).total > 2"
+              class="calendar-task-more full-width flex row justify-end"
             >
+              <small>+{{ searchInDay(day).total - 2 }} tasks</small>
+            </div>
           </div>
         </div>
       </div>
@@ -101,8 +98,10 @@
 <script>
 import { defineComponent, ref } from "vue";
 import { getCalendar } from "src/functions/getCalendar.js";
-import tasks from "src/data/tasksPage/rows.json";
-import { useQuasar } from "quasar";
+import { useQuasar, date as dt } from "quasar";
+import { getTasksByMonth } from "src/functions/task";
+import EventBus from "src/functions/EventBus";
+import storage from "src/functions/virtualStorage";
 
 import CalendarTasks from "src/components/CalendarTasks.vue";
 import TaskComponent from "src/components/TaskComponent.vue";
@@ -120,6 +119,7 @@ export default defineComponent({
   },
   setup() {
     const calendar = ref(getCalendar());
+    const canActualize = ref(true);
     const months = {
       0: "January",
       1: "February",
@@ -134,36 +134,78 @@ export default defineComponent({
       10: "November",
       11: "December",
     };
+    const showTasks = ref(false);
     const days = ["Sun", "Mon", "Tues", "Wednes", "Thues", "Fri", "Satur"];
+    const now = new Date();
+    const newTaskDate = ref("");
+    const data = ref([]);
+    const date = ref({
+      year: now.getFullYear(),
+      month: now.getMonth(),
+      day: now.getDate(),
+    });
+    const tasks = ref([]);
+
+    const actualizeTasks = () => {
+      getTasksByMonth(date.value.month + 1, date.value.year)
+        .then(({ data, status }) => {
+          if (status === 200) {
+            tasks.value = data.tasks;
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
+    actualizeTasks();
+    setInterval(() => {
+      actualizeTasks();
+    }, 1000);
+
+    EventBus.on("deleted-task", () => {
+      actualizeTasks();
+      showTasks.value = false;
+    });
+
+    EventBus.on("finalized-task", () => {
+      actualizeTasks();
+      showTasks.value = false;
+    });
 
     return {
-      tasks: ref(tasks),
+      now,
+      data,
+      tasks,
       tasksDay: ref([]),
       calendar,
       months,
-      date: ref({
-        year: new Date().getFullYear(),
-        month: new Date().getMonth(),
-        day: new Date().getDate(),
-      }),
+      date,
       days,
       getCalendar,
-      data: null,
-      showTasks: ref(false),
+      showTasks,
       showTask: ref(false),
       showNewTask: ref(false),
       task: ref(null),
-      newTaskDate: ref(""),
+      newTaskDate,
       dateForTasks: ref(""),
+      canActualize,
+      actualizeTasks,
     };
   },
   methods: {
     selectMonth(direction) {
+      this.canActualize = false;
+      this.tasksDay = [];
       if (direction === "prev") {
         this.date.month -= 1;
         if (this.date.month < 0) {
           this.date.month = 11;
           this.date.year -= 1;
+          if (this.date.year < 1900) {
+            this.date.year = 1900;
+            this.date.month = 0;
+            return;
+          }
         }
       } else {
         this.date.month += 1;
@@ -174,88 +216,75 @@ export default defineComponent({
       }
       let date = new Date(this.date.year, this.date.month);
       this.calendar = getCalendar(date);
+      this.actualizeTasks();
+      setTimeout(() => {
+        this.canActualize = true;
+      }, 100);
     },
     isWeekend(day) {
       let date = new Date(this.date.year, this.date.month, day);
       return date.getDay() === 0 || date.getDay() === 6;
     },
-    filterTasks(day) {
-      let date = `${this.date.year}-${("0" + (this.date.month + 1)).slice(
-        -2
-      )}-${("0" + day).slice(-2)}`;
-      let tasks = this.tasks.filter((task) => task.created_at === date);
-      let priorityValues = {
-        urgent: 3,
-        high: 2,
-        normal: 1,
-        low: 0,
-      };
-      tasks = tasks.sort((a, b) => {
-        let ap = priorityValues[a.priority];
-        let bp = priorityValues[b.priority];
-        if (ap > bp) return -1;
-        if (ap < bp) return 1;
-        return 0;
-      });
-      let statusValues = {
-        created: 1,
-        ended: 0,
-      };
-      tasks = tasks.sort((a, b) => {
-        let ast = statusValues[a.status];
-        let bst = statusValues[b.status];
-        if (ast > bst) return -1;
-        if (ast < bst) return 1;
-        return 0;
-      });
-      return tasks;
-    },
-    setIconsAndColors(tasks) {
-      const icons = {
-        urgent: "error",
-        high: "warning",
-        normal: "info",
-        low: "circle",
-      };
-      const iconColors = {
-        urgent: "negative",
-        high: "warning",
-        normal: "primary",
-        low: "green",
-      };
-      tasks = tasks.map((t) => {
-        t.color = "primary";
-        let date1 = new Date(t.created_at);
-        let date2 = new Date();
-        if (date1 - date2 < 0) t.color = "negative";
-        if (t.status === "ended") t.color = "green";
-        t.icon = icons[t.priority];
-        t.iconColor = iconColors[t.priority];
-        return t;
-      });
-      return tasks;
-    },
+    filterTasks(day) {},
+    setIconsAndColors(tasks) {},
     searchInDay(day) {
-      if (day === "") return { tasks: [], number: 0 };
-      let tasks = this.filterTasks(day);
-      let number = tasks.length - 2;
-      tasks = tasks.slice(0, 2);
-      tasks = this.setIconsAndColors(tasks);
-      return { tasks, number };
+      let tasks = this.tasks
+        .filter((task) => {
+          let [_1, _2, d] = task.runDate.split("-");
+          return Number(d) === Number(day) && task.status !== "archived";
+        })
+        .sort((a, b) => {
+          const status = {
+            ended: 1,
+            created: 2,
+            archived: 0,
+          };
+          if (status[a.status] > status[b.status]) return -1;
+          if (status[a.status] < status[b.status]) return 1;
+          return 0;
+        });
+      return {
+        tasks: tasks.slice(0, 2),
+        total: tasks.length,
+      };
     },
     showTasksData(day) {
-      let tasks = this.filterTasks(day);
-      tasks = this.setIconsAndColors(tasks);
-      tasks = tasks.map((t) => {
-        const [year, month, day] = t.created_at.split("-");
-        t.isoDate = `${day}/${month}/${year}`;
-        return t;
-      });
-      this.tasksDay = tasks;
-      this.dateForTasks = `${this.date.year}-${(
-        "0" +
-        (this.date.month + 1)
-      ).slice(-2)}-${("0" + day).slice(-2)}`;
+      const { year: y, month: m } = this.date;
+      this.dateForTasks = `${y}-${("0" + (Number(m) + 1)).slice(-2)}-${(
+        "0" + day
+      ).slice(-2)}`;
+      storage.set("current_date", this.dateForTasks);
+      this.tasksDay = this.tasks
+        .filter((task) => {
+          let [_1, _2, d] = task.runDate.split("-");
+          return Number(d) === Number(day);
+        })
+        .sort((a, b) => {
+          const statusOrder = {
+            ended: 1,
+            created: 0,
+            archived: 0,
+          };
+          const priorities = {
+            urgent: 4,
+            high: 3,
+            normal: 2,
+            low: 1,
+          };
+
+          // Primero, ordena por estado
+          if (statusOrder[a.status] !== statusOrder[b.status]) {
+            return statusOrder[a.status] - statusOrder[b.status];
+          }
+
+          // Si los estados son iguales, ordena por prioridad
+          if (priorities[a.priority.name] > priorities[b.priority.name])
+            return -1;
+          if (priorities[a.priority.name] < priorities[b.priority.name])
+            return 1;
+          return 0;
+        })
+        .filter((t) => t.status !== "archived");
       this.showTasks = true;
     },
     viewTask(task) {
@@ -263,7 +292,36 @@ export default defineComponent({
       this.showTask = true;
     },
     newTask(date) {
-      this.newTaskDate = date;
+      let [y, m, d] = date.split("-");
+      date = `${y}-${("0" + m).slice(-2)}-${("0" + d).slice(-2)}`;
+      // this.newTaskDate = date;
+      this.showNewTask = true;
+      EventBus.emit("calendar-new-task", date);
+    },
+    getColor(date, status) {
+      if (status === "ended") return "green-5";
+      let color = "blue-5";
+      let [y, m, d] = date.split("-");
+      d = Number(d);
+      let now = new Date();
+      if (
+        d == now.getDate() &&
+        m == now.getMonth() + 1 &&
+        y == now.getFullYear()
+      ) {
+        color = "orange-5";
+      }
+      if (
+        d < now.getDate() &&
+        m <= now.getMonth() + 1 &&
+        y <= now.getFullYear()
+      ) {
+        color = "red-5";
+      }
+      return color;
+    },
+    editTask() {
+      this.showTask = false;
       this.showNewTask = true;
     },
   },

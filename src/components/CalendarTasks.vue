@@ -43,14 +43,12 @@
             @click="viewTask(task)"
           >
             <q-item-section>
-              <q-item-label :style="'color: ' + colors[task.color]">{{
-                task.name
-              }}</q-item-label>
+              <q-item-label>{{ task.title }}</q-item-label>
             </q-item-section>
             <q-item-section side>
               <q-badge
-                :color="priorities[task.priority].color"
-                :label="priorities[task.priority].name"
+                :color="priorities[task.priority.name].color"
+                :label="priorities[task.priority.name].name"
                 v-if="task.status !== 'ended'"
               />
               <q-icon name="check" v-else style="color: green" />
@@ -63,6 +61,7 @@
 </template>
 <script>
 import { ref, watch } from "vue";
+import storage from "src/functions/virtualStorage";
 
 export default {
   name: "CalendarTasks",
@@ -117,6 +116,7 @@ export default {
       this.$emit("update:showtask", task);
     },
     newTask(date) {
+      console.log(storage.get("current_date"));
       this.$emit("update:newtask", date);
     },
   },

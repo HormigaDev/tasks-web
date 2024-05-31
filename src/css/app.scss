@@ -2,6 +2,10 @@
 * {
   user-select: none;
 }
+html,
+body {
+  background: $bg-lvl-5;
+}
 // impedir arrastrar las imagenes
 img {
   pointer-events: none;
@@ -68,4 +72,9 @@ a {
 }
 .q-page {
   transition: width 0.2s !important;
+}
+
+.t-input-disabled {
+  opacity: 0.5;
+  pointer-events: none;
 }

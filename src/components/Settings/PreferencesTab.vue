@@ -1,5 +1,5 @@
 <template>
-  <q-tab-panel :name="name" class="flex column" style="align-items: center">
+  <q-tab-panel :name="name" class="flex column t-settings-tab">
     <div class="flex flex-center column">
       <div class="text-h6">Apperance</div>
       <div class="flex row justify-center">
@@ -36,6 +36,22 @@
       </div>
     </div>
     <q-separator dark width="80%" class="q-mt-lg q-mb-lg" color="grey-9" />
+    <div class="flex flex-center column">
+      <div class="text-h6">Behavior</div>
+      <div class="flex row justify-center">
+        <!-- default priority -->
+        <q-select
+          v-model="settings.defaultPriority"
+          :options="defaultPriorities"
+          label="Default priority"
+          dark
+          color="white"
+          class="q-mt-md q-ml-md q-mr-md t-settings-select"
+          outlined
+          label-color="grey-7"
+        />
+      </div>
+    </div>
   </q-tab-panel>
 </template>
 <script>
@@ -85,6 +101,24 @@ export default {
           value: "24",
         },
       ],
+      defaultPriorities: [
+        {
+          label: "Low",
+          value: "low",
+        },
+        {
+          label: "Normal",
+          value: "normal",
+        },
+        {
+          label: "High",
+          value: "high",
+        },
+        {
+          label: "Urgent",
+          value: "urgent",
+        },
+      ],
       settings: ref({
         language: {
           label: "English",
@@ -97,6 +131,10 @@ export default {
         timeFormat: {
           label: "12 hours",
           value: "12",
+        },
+        defaultPriority: {
+          label: "Normal",
+          value: "normal",
         },
       }),
     };

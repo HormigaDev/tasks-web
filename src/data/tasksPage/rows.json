@@ -6,7 +6,8 @@
     "category": ["BUG", "SG", "BUG"],
     "priority": "urgent",
     "status": "ended",
-    "created_at": "2024-04-12"
+    "created_at": "2024-04-12",
+    "fixed": true
   },
   {
     "name": "Resolver Bug2",
@@ -14,7 +15,8 @@
     "category": ["BUG", "SG", "A_B"],
     "priority": "urgent",
     "status": "created",
-    "created_at": "2024-04-13"
+    "created_at": "2024-04-13",
+    "fixed": true
   },
   {
     "name": "Resolver Bug3",
@@ -30,7 +32,8 @@
     "category": ["BUG", "SG", "A_B"],
     "priority": "urgent",
     "status": "created",
-    "created_at": "2024-04-13"
+    "created_at": "2024-04-13",
+    "fixed": true
   },
   {
     "name": "Resolver Bug5",

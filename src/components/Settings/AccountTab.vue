@@ -1,5 +1,5 @@
 <template>
-  <q-tab-panel :name="name" class="flex column" style="align-items: center">
+  <q-tab-panel :name="name" class="flex column t-settings-tab">
     <div class="flex column flex-center">
       <div class="text-h6 q-mb-md">Security</div>
       <div class="flex row justify-between">
@@ -27,12 +27,12 @@
         />
       </div>
       <q-btn
-        label="Change password"
-        color="dark"
+        :label="changePasswordButtonLabel"
+        :color="changePasswordButtonColor"
         class="q-mt-md text-grey-2"
         style="width: 180px"
         size="sm"
-        icon="save"
+        :icon="changePasswordButtonColor === 'positive' ? 'done' : 'save'"
         dark-percentage
         :loading="changePasswordLoading"
         :percentage="changePasswordPercentage"
@@ -98,6 +98,8 @@ export default {
       }),
       changePasswordLoading: ref(false),
       changePasswordPercentage: ref(0),
+      changePasswordButtonColor: ref("dark"),
+      changePasswordButtonLabel: ref("Change Password"),
     };
   },
   methods: {
@@ -111,6 +113,12 @@ export default {
       setTimeout(() => {
         this.changePasswordLoading = false;
         this.changePasswordPercentage = 0;
+        this.changePasswordButtonColor = "positive";
+        this.changePasswordButtonLabel = "Password changed!";
+        setTimeout(() => {
+          this.changePasswordButtonColor = "dark";
+          this.changePasswordButtonLabel = "Change Password";
+        }, 3500);
       }, 500);
     },
   },

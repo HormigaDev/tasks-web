@@ -39,6 +39,7 @@
                   </div>
 
                   <q-btn
+                    @click="logout"
                     color="white"
                     outline
                     label="Logout"
@@ -64,7 +65,11 @@
       class="t-bg-drawer flex column justify-space-between"
     >
       <q-list>
-        <q-item to="/tasks" active-class="t-item-selected" @click="showLoading">
+        <q-item
+          to="/main/tasks"
+          active-class="t-item-selected"
+          @click="showLoading"
+        >
           <q-item-section>
             <div class="t-drawer-item text-white">
               <q-icon name="description" class="t-icon" />
@@ -75,7 +80,7 @@
           </q-item-section>
         </q-item>
         <q-item
-          to="/calendar"
+          to="/main/calendar"
           active-class="t-item-selected"
           @click="showLoading"
         >
@@ -89,7 +94,7 @@
           </q-item-section>
         </q-item>
         <q-item
-          to="/affairs"
+          to="/main/affairs"
           active-class="t-item-selected"
           @click="showLoading"
         >
@@ -105,7 +110,7 @@
       </q-list>
       <q-list class="absolute-bottom flex column justify-center">
         <q-item
-          to="/settings"
+          to="/main/settings"
           active-class="t-item-selected"
           @click="showLoading"
         >
@@ -131,6 +136,7 @@
 <script>
 import { ref } from "vue";
 import { useQuasar } from "quasar";
+import Cookies from "js-cookie";
 
 export default {
   setup(props) {
@@ -164,6 +170,10 @@ export default {
       setTimeout(() => {
         this.isTotalityOpen = this.leftDrawerOpen;
       }, 200);
+    },
+    logout() {
+      Cookies.remove("token");
+      this.$router.push("/auth/login");
     },
   },
 };

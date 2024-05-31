@@ -17,14 +17,14 @@
       />
       <q-card-section class="flex" style="position: sticky">
         <div class="text-h6">
-          {{ affair.name }}
+          {{ affair.title }}
           <q-btn
             dense
             color="grey-7"
             icon="add"
             size="sm"
             class="q-ml-lg"
-            @click="() => $emit('update:newtimeline', true)"
+            @click="newTimeline"
           />
           <q-btn
             dense
@@ -34,29 +34,51 @@
             class="q-ml-md"
             @click="editing = !editing"
           />
+          <q-btn
+            dense
+            color="grey-7"
+            icon="edit"
+            size="sm"
+            class="q-ml-md q-pr-sm q-pl-xs"
+            label="Edit Affair"
+            v-if="editing"
+            @click="editAffair(affair.id)"
+          />
         </div>
       </q-card-section>
-      <q-card-section style="max-height: 60vh; height: 100%; overflow: auto">
-        <div class="q-px-lg q-py-md">
+      <q-card-section style="max-height: 60vh; height: 100%">
+        <div
+          class="q-px-lg q-py-md"
+          style="max-height: 60vh; height: 100%; overflow: auto"
+        >
           <q-timeline color="secondary">
             <q-timeline-entry
-              v-for="(timeline, i) in affair.timeline"
-              :key="i"
+              v-for="timeline in affair.timelines"
+              :key="timeline.id"
               :title="timeline.title"
-              :subtitle="timeline.date"
-              :color="timeline.color"
+              :subtitle="formatDate(timeline.createdAt)"
+              color="grey-7"
               :icon="editing ? 'edit' : ''"
             >
               <template v-slot:subtitle>
                 <div>
                   <q-btn
                     size="xs"
+                    icon="edit"
+                    color="grey-7"
+                    class="q-pa-xs q-mr-sm"
+                    v-if="editing"
+                    @click="editTimeline(timeline)"
+                  />
+                  <q-btn
+                    size="xs"
                     icon="delete"
                     color="red"
                     class="q-pa-xs q-mr-sm"
                     v-if="editing"
+                    @click="confirmDeletionTimeline(timeline.id)"
                   />
-                  {{ timeline.date }}
+                  {{ formatDate(timeline.createdAt) }}
                 </div>
               </template>
               <div style="user-select: text; white-space: pre-line">
@@ -71,6 +93,11 @@
 </template>
 <script>
 import { ref, watch } from "vue";
+import formatDate from "src/functions/formatDate";
+import { getAffairTimelines, deleteTimeline } from "src/functions/affairs";
+import EventBus from "src/functions/EventBus";
+import storage from "src/functions/virtualStorage";
+import { useQuasar } from "quasar";
 
 export default {
   name: "AffairComponent",
@@ -78,8 +105,19 @@ export default {
     showProp: Boolean,
     affairProp: Object,
   },
-  emits: ["update:show"],
+  emits: ["update:show", "update:newtimeline", "update:editaffair"],
   setup(props) {
+    const affair = ref(props.affairProp);
+    const $q = useQuasar();
+    const actualizeTimelines = () => {
+      getAffairTimelines(affair.value.id).then(({ data, status }) => {
+        if (status === 200) {
+          affair.value.timelines = data.timelines;
+        }
+      });
+    };
+    actualizeTimelines();
+
     watch(
       () => props.showProp,
       (value) => {
@@ -98,10 +136,35 @@ export default {
       }
     );
 
+    EventBus.on("timeline-created", () => {
+      actualizeTimelines();
+    });
+    EventBus.on("timeline-updated", () => {
+      actualizeTimelines();
+    });
+
     return {
+      actualizeTimelines,
       show: ref(props.showProp),
-      affair: ref(props.affairProp),
+      affair,
       editing: ref(false),
+      formatDate,
+      confirmDelete: (confirm, id) => {
+        $q.dialog({
+          title: "Confirm",
+          message: "Would you like to delete this affair?",
+          cancel: true,
+          persistent: true,
+          color: "red-5",
+          dark: true,
+        })
+          .onOk(() => {
+            confirm(id);
+          })
+          .onCancel(() => {
+            // console.log('>>>> Cancel')
+          });
+      },
     };
   },
   methods: {
@@ -132,6 +195,38 @@ export default {
         "blue-grey",
       ];
       return colors[Math.floor(Math.random() * colors.length)];
+    },
+    newTimeline() {
+      EventBus.emit("new-affair-timeline", this.affair.id);
+      this.$emit("update:newtimeline", true);
+    },
+    editAffair(id) {
+      storage.set("editingAffair", {
+        title: this.affair.title,
+        personName: this.affair.personName,
+        id: id,
+      });
+      this.$emit("update:editaffair", true);
+      this.$emit("update:show", false);
+    },
+    editTimeline(timeline) {
+      storage.set("editingTimeline", timeline);
+      this.$emit("update:newtimeline", true);
+    },
+    confirmDeletionTimeline(id) {
+      this.confirmDelete(this.deleteTimeline, id);
+    },
+    deleteTimeline(id) {
+      deleteTimeline(storage.get("current_affair"), id).then(({ status }) => {
+        if (status === 200) {
+          this.$q.notify({
+            message: "Timeline deleted",
+            color: "green-5",
+            position: "bottom-right",
+          });
+          this.actualizeTimelines();
+        }
+      });
     },
   },
 };

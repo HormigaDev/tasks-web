@@ -14,9 +14,10 @@
             name="notifications"
             label="Notifications"
           />
+          <q-tab icon="sync" name="syncronization" label="Syncronization" />
           <div class="flex row justify-center absolute-bottom">
             <q-btn
-              label="Save settings"
+              label="Save changes"
               color="dark"
               class="q-mb-md text-grey-2"
               style="width: 140px"
@@ -41,28 +42,7 @@
         >
           <AccountTab name="account" />
           <PreferencesTab name="preferences" />
-
-          <q-tab-panel name="notifications">
-            <div class="text-h4 q-mb-md">Movies</div>
-            <p>
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis
-              praesentium cumque magnam odio iure quidem, quod illum numquam
-              possimus obcaecati commodi minima assumenda consectetur culpa fuga
-              nulla ullam. In, libero.
-            </p>
-            <p>
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis
-              praesentium cumque magnam odio iure quidem, quod illum numquam
-              possimus obcaecati commodi minima assumenda consectetur culpa fuga
-              nulla ullam. In, libero.
-            </p>
-            <p>
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis
-              praesentium cumque magnam odio iure quidem, quod illum numquam
-              possimus obcaecati commodi minima assumenda consectetur culpa fuga
-              nulla ullam. In, libero.
-            </p>
-          </q-tab-panel>
+          <NotificationsTab name="notifications" />
         </q-tab-panels>
       </template>
     </q-splitter>
@@ -73,11 +53,13 @@ import { ref, defineComponent } from "vue";
 
 import AccountTab from "src/components/Settings/AccountTab.vue";
 import PreferencesTab from "src/components/Settings/PreferencesTab.vue";
+import NotificationsTab from "src/components/Settings/NotificationsTab.vue";
 
 export default defineComponent({
   components: {
     AccountTab,
     PreferencesTab,
+    NotificationsTab,
   },
   setup() {
     return {

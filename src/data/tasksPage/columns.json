@@ -7,10 +7,10 @@
     "sortable": true
   },
   {
-    "name": "category",
-    "label": "Category",
-    "field": "category",
-    "sortable": true
+    "name": "categories",
+    "label": "Categories",
+    "field": "categories",
+    "sortable": false
   },
   {
     "name": "priority",

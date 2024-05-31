@@ -13,3 +13,13 @@
 .t-settings-select {
   min-width: 220px;
 }
+.t-settings-tab {
+  align-items: center;
+}
+.t-setting-disabled {
+  pointer-events: none;
+}
+.t-setting-row-component {
+  width: 120px;
+  margin-right: 12px;
+}

@@ -6,6 +6,7 @@
       v-if="show"
       :affairProp="affair"
       @update:newtimeline="newTimeline"
+      @update:editaffair="showNewAffair = true"
     />
     <NewAffairTimelineComponent
       :show="showNewTimeline"
@@ -17,7 +18,7 @@
       @update:show="showNewAffair = $event"
       v-if="showNewAffair"
     />
-    <div class="q-pa-md">
+    <div>
       <AffairsTableComponent
         @update:selectaffair="selectAffair"
         @update:newaffair="showNewAffair = true"
