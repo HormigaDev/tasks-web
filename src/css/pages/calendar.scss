@@ -10,18 +10,30 @@
   font-size: 32px;
   color: $text-level-1;
 }
+.calendar-chevron.t-light {
+  color: $t-light-text-level-1 !important;
+}
 .calendar-day {
   position: relative;
   height: 80px;
   background-color: $bg-deep2;
   transition: background 0.2s ease;
 }
+.calendar-day.t-light {
+  background-color: $t-light-bg-lvl-6 !important;
+}
 .calendar-day:hover {
   background-color: $bg-lvl-7;
+}
+.calendar-day.t-light:hover {
+  background-color: $t-light-bg-lvl-7 !important;
 }
 .calendar-day-now {
   height: 80px;
   background-color: $bg-deep;
+}
+.calendar-day-now.t-light {
+  background-color: $t-light-bg-deep !important;
 }
 .calendar-id {
   position: absolute;
@@ -38,4 +50,7 @@
 .calendar-day-empty {
   background-color: $bg-lvl-2;
   opacity: 0.5;
+}
+.calendar-day-empty.t-light {
+  background-color: $t-light-bg-lvl-2 !important;
 }

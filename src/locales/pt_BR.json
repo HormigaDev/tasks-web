@@ -1,0 +1,398 @@
+{
+  "layouts": {
+    "titles": {
+      "tasks": "Tarefas",
+      "calendar": "Calendário",
+      "affairs": "Assuntos",
+      "settings": "Configurações",
+      "logout": "Sair",
+      "welcome": "Bem-vindo",
+      "notifications": "Notificações",
+      "noNotifications": "Sem notificações",
+      "dismiss": "Dispensar",
+      "urgents": "Urgentes",
+      "highs": "de Alta prioridade",
+      "normals": "Normais",
+      "lows": "de baixa prioridade"
+    },
+    "messages": {
+      "notifications_urgent": "Tens tarefas urgentes para fazer",
+      "notifications_high": "Tens arefas de alta prioridade para fazer",
+      "notifications_normal": "Tens arefas para fazer",
+      "notifications_low": "Tens arefas para fazer"
+    }
+  },
+  "pages": {
+    "tasks": {
+      "titles": {
+        "categories": "Categorias",
+        "new_category": "Nova Categoria",
+        "edit_category": "Editar Categoria",
+        "new_task": "Nova Tarefa",
+        "edit_task": "Editar Tarefa",
+        "created_at": "Criado em:",
+        "scheduled_for": "Agendado para:",
+        "priority": "Prioridade",
+        "view_task": "Ver Tarefa",
+        "archive": "Arquivar",
+        "assign_task": "Fixar Tarefa",
+        "unassign_task": "Desfixar Tarefa",
+        "delete": "Excluir",
+        "confirm_deletion": "Confirmar Exclusão",
+        "finalized": "Finalizada",
+        "confirm_delete_category": "Confirmar Exclusão da Categoria",
+        "nothing_to_show": "Nada para mostrar por aqui"
+      },
+      "messages": {
+        "confirm_delete": "Tem certeza de que deseja excluir esta tarefa?",
+        "task_deleted": "Tarefa excluída",
+        "erro_deleting_task": "Erro ao excluir a tarefa",
+        "task_archived": "Tarefa arquivada",
+        "task_assigned": "Tarefa fixada",
+        "task_unassigned": "Tarefa desfixada",
+        "urgent_task": "Esta tarefa é urgente!",
+        "invalid_category_name": "O nome da categoria deve ter entre 1 e 50 caracteres alfanuméricos e espaços",
+        "invalid_category_color": "A cor da categoria deve ser um código hexadecimal válido sem o sinal #",
+        "invalid_category_icon": "O ícone da categoria deve ser um nome de ícone válido do \"Google Material Icons\". Deve ter entre 2 e 20 caracteres",
+        "error_saving_category": "Erro ao criar a categoria",
+        "error": "Ocorreu um erro",
+        "error_deleting_category": "Erro ao excluir a categoria",
+        "category_deleted": "Categoria excluída",
+        "category_saved": "Categoria criada",
+        "category_updated": "Categoria atualizada",
+        "confirm_category_delete": "Tem certeza de que deseja excluir esta categoria?",
+        "invalid_title": "O título deve ter entre 10 e 100 caracteres",
+        "invalid_description": "A descrição deve ter entre 20 e 5000 caracteres",
+        "invalid_date": "A data de execução deve ser uma data válida",
+        "task_saved": "Tarefa criada",
+        "error_saving_task": "Erro ao criar a tarefa",
+        "task_updated": "Tarefa atualizada",
+        "error_updating_task": "Erro ao atualizar a tarefa",
+        "task_finalized": "Tarefa finalizada!"
+      },
+      "inputs": {
+        "labels": {
+          "priority": "Prioridade",
+          "order_by": "Ordenar por",
+          "order": "Ordem",
+          "search_task": "Buscar Tarefa",
+          "show_archiveds": "Mostrar Arquivadas",
+          "show_finalizeds": "Mostrar Finalizadas",
+          "category_name": "Nome da Categoria",
+          "category_color": "Cor da Categoria (Hexadecimal)",
+          "category_icon": "Ícone da Categoria",
+          "title": "Título",
+          "description": "Descrição",
+          "categories": "Categorias",
+          "date": "Data de Execução"
+        },
+        "options": {
+          "priorities": {
+            "all": "Todas",
+            "low": "Baixa",
+            "normal": "Normal",
+            "high": "Alta",
+            "urgent": "Urgente"
+          },
+          "orders_by": {
+            "created_at": "Data de Criação",
+            "run_date": "Data de Execução",
+            "title": "Título",
+            "description": "Descrição"
+          },
+          "orders": {
+            "asc": "Ascendente",
+            "desc": "Descendente"
+          }
+        }
+      },
+      "buttons": {
+        "save": "Criar",
+        "cancel": "Cancelar",
+        "update": "Atualizar",
+        "delete": "Excluir",
+        "yes": "Sim",
+        "no": "Não"
+      }
+    },
+    "calendar": {
+      "words": {
+        "of": "de"
+      },
+      "titles": {
+        "months": {
+          "01": "Janeiro",
+          "02": "Fevereiro",
+          "03": "Março",
+          "04": "Abril",
+          "05": "Maio",
+          "06": "Junho",
+          "07": "Julho",
+          "08": "Agosto",
+          "09": "Setembro",
+          "10": "Outubro",
+          "11": "Novembro",
+          "12": "Dezembro"
+        },
+        "weekdays": {
+          "sun": "Domingo",
+          "mon": "Segunda-feira",
+          "tues": "Terça-feira",
+          "wednes": "Quarta-feira",
+          "thurs": "Quinta-feira",
+          "fri": "Sexta-feira",
+          "satur": "Sábado"
+        },
+        "priorities": {
+          "low": "Baixa",
+          "normal": "Normal",
+          "high": "Alta",
+          "urgent": "Urgente"
+        },
+        "tasks": "Tarefas",
+        "nothing_to_show": "Nada para mostrar por aqui"
+      },
+      "inputs": {
+        "labels": {
+          "task_title": "Título da Tarefa",
+          "task_description": "Descrição da Tarefa",
+          "task_priority": "Prioridade da Tarefa",
+          "task_categories": "Categorias da Tarefa",
+          "task_date": "Data de Execução"
+        }
+      },
+      "buttons": {
+        "save": "Salvar",
+        "cancel": "Cancelar"
+      }
+    },
+    "affairs": {
+      "titles": {
+        "new_affair": "Novo Assunto",
+        "edit_affair": "Editar Assunto",
+        "new_affair_timeline": "Nova Linha do Tempo",
+        "edit_affair_timeline": "Editar Linha do Tempo",
+        "created_at": "Criado em:",
+        "last_update": "Última Atualização:",
+        "confirm_deletion": "Confirmar Exclusão"
+      },
+      "messages": {
+        "confirm_delete": "Tem certeza de que deseja excluir este assunto?",
+        "affair_deleted": "Assunto excluído",
+        "affair_created": "Assunto criado!",
+        "affair_archived": "Assunto arquivado",
+        "affair_unarchived": "Assunto desarquivado",
+        "error_deleting_affair": "Erro ao excluir o assunto",
+        "affair_updated": "Assunto atualizado",
+        "error_creating_affair": "Erro ao criar o assunto",
+        "confirm_delete_timeline": "Tem certeza de que deseja excluir esta linha do tempo?",
+        "timeline_deleted": "Linha do tempo excluída",
+        "nothing_to_show": "Nada para mostrar por aqui"
+      },
+      "inputs": {
+        "labels": {
+          "show_archiveds": "Mostrar Arquivados",
+          "order_by": "Ordenar por",
+          "order": "Ordem",
+          "search_affair": "Buscar Assunto",
+          "affair_title": "Título do Assunto",
+          "affair_first_timeline_description": "Descrição da Primeira Linha do Tempo",
+          "affair_person_name": "Nome da Pessoa",
+          "affair_timeline_title": "Título da Linha do Tempo",
+          "affair_timeline_description": "Descrição da Linha do Tempo",
+          "archived": "Arquivado"
+        },
+        "options": {
+          "orders_by": {
+            "created_at": "Data de Criação",
+            "last_update": "Última Atualização",
+            "title": "Título",
+            "person_name": "Nome da Pessoa"
+          },
+          "orders": {
+            "asc": "Ascendente",
+            "desc": "Descendente"
+          }
+        }
+      },
+      "buttons": {
+        "cancel": "Cancelar",
+        "save": "Salvar",
+        "update": "Atualizar",
+        "edit_affair": "Editar Assunto",
+        "delete": "Excluir"
+      }
+    },
+    "settings": {
+      "titles": {
+        "account": "Conta",
+        "preferences": "Preferências",
+        "notifications": "Notificações",
+        "syncronization": "Sincronização",
+        "security": "Segurança",
+        "apperance": "Aparência",
+        "behavior": "Comportamento",
+        "notification": "Notificação",
+        "priorities_for_notifications": "Prioridades para Notificações",
+        "notification_frequency": "Frequência de Notificações",
+        "priority": "Prioridade",
+        "urgent": "Urgente",
+        "high": "Alta",
+        "normal": "Normal",
+        "low": "Baixa",
+        "select_days": "Dias"
+      },
+      "messages": {
+        "fill_all_fields": "Por favor, preencha todos os campos",
+        "must_be_different_password": "A nova senha deve ser diferente da anterior",
+        "wrong_password": "Senha anterior incorreta",
+        "invalid_password": "A senha deve ter entre 8 e 64 caracteres, incluir pelo menos 1 letra minúscula, 1 letra maiúscula, 1 número e 1 caractere especial",
+        "error_changing_password": "Erro ao alterar a senha",
+        "settings_saved": "Configurações salvas!",
+        "error_saving_settings": "Erro ao salvar as configurações",
+        "invalid_username": "O nome de usuário deve ter entre 4 e 50 caracteres alfanuméricos",
+        "username_already_taken": "Nome de usuário já em uso"
+      },
+      "inputs": {
+        "labels": {
+          "previous_password": "Senha Anterior",
+          "new_password": "Nova Senha",
+          "app_language": "Idioma do Aplicativo",
+          "app_theme": "Tema do Aplicativo",
+          "time_format": "Formato de Hora",
+          "default_priority": "Prioridade Padrão",
+          "main_view": "Vista Principal",
+          "show_notifications": "Mostrar Notificações",
+          "select_my_files": "Selecionar Meu Arquivo",
+          "notification_sound": "Som de Notificação",
+          "horary": "Horário",
+          "time": "Intervalo",
+          "start": "Início",
+          "end": "Fim",
+          "days": "Dias",
+          "hours": "Horas",
+          "minutes": "Minutos",
+          "select_sound": "Por defeito",
+          "group_notifications": "Agrupar Notificações",
+          "username": "Nome de Usuário"
+        },
+        "options": {
+          "priorities": {
+            "low": "Baixa",
+            "normal": "Normal",
+            "high": "Alta",
+            "urgent": "Urgente"
+          },
+          "languages": {
+            "en-US": "Inglês",
+            "es-ES": "Espanhol",
+            "pt-BR": "Português"
+          },
+          "themes": {
+            "light": "Claro",
+            "dark": "Escuro"
+          },
+          "time_formats": {
+            "12": "12 horas",
+            "24": "24 horas"
+          },
+          "main_views": {
+            "tasks": "Tarefas",
+            "calendar": "Calendário",
+            "affairs": "Assuntos"
+          },
+          "days": {
+            "sun": "Domingo",
+            "mon": "Segunda-feira",
+            "tues": "Terça-feira",
+            "wednes": "Quarta-feira",
+            "thurs": "Quinta-feira",
+            "fri": "Sexta-feira",
+            "satur": "Sábado"
+          }
+        }
+      },
+      "buttons": {
+        "change_password": "Alterar Senha",
+        "error": "Erro",
+        "password_changed": "Senha alterada!",
+        "close": "Fechar"
+      }
+    },
+    "login": {
+      "titles": {
+        "login": "Faça login para continuar",
+        "register": "Registrar-se",
+        "locally": "Localmente"
+      },
+      "messages": {
+        "email_username_required": "Email ou nome de usuário é obrigatório",
+        "password_required": "Senha é obrigatória",
+        "user_not_found": "Usuário não encontrado",
+        "invalid_credentials": "Credenciais inválidas",
+        "dont_have_account": "Não tem uma conta?"
+      },
+      "inputs": {
+        "labels": {
+          "email_username": "Email ou Nome de usuário",
+          "password": "Senha",
+          "language": "Idioma"
+        }
+      },
+      "buttons": {
+        "login": "Entrar",
+        "login_locally": "Entrar localmente",
+        "login_online": "Entrar online"
+      }
+    },
+    "register": {
+      "titles": {
+        "register_to_continue": "Registre-se para continuar",
+        "login": "Entrar"
+      },
+      "messages": {
+        "already_an_account": "Já tem uma conta?",
+        "invalid_username": "O nome de usuário deve ter entre 4 e 50 caracteres alfanuméricos",
+        "invalid_email": "O e-mail deve ser válido",
+        "invalid_password": "A senha deve ter entre 8 e 64 caracteres, 1 letra minúscula, 1 letra maiúscula, 1 número e 1 caractere especial no mínimo",
+        "equal_passwords": "As senhas devem ser iguais",
+        "invalid_ddd": "O DDD deve ter 2 dígitos válidos",
+        "invalid_phone": "O número de telefone deve ter entre 8 e 9 dígitos",
+        "user_already_exists": "O usuário já existe",
+        "invalid_data": "Dados inválidos"
+      },
+      "inputs": {
+        "labels": {
+          "phone_type": "Tipo de telefone",
+          "username": "Nome de usuário",
+          "email": "E-mail",
+          "password": "Senha",
+          "confirm_password": "Confirmar senha",
+          "phone_number": "Número de telefone",
+          "ddd": "DDD"
+        },
+        "options": {
+          "phone_types": {
+            "cellphone": "Celular",
+            "work": "Trabalho",
+            "home": "Casa"
+          }
+        }
+      },
+      "buttons": {
+        "register": "Registrar"
+      }
+    },
+    "open_dev_tools": {
+      "messages": {
+        "invalid_password": "Senha inválida"
+      },
+      "inputs": {
+        "labels": {
+          "admin_password": "Senha de administrador",
+          "open_dev_tools": "Abrir ferramentas de desenvolvimento"
+        }
+      }
+    }
+  }
+}

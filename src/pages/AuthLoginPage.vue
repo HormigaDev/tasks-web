@@ -1,19 +1,16 @@
 <template>
   <q-page class="t-login-bg flex flex-center">
     <div class="column flex-center flex text-white" style="min-width: 300px">
-      <div
-        class="flex flex-center justify-center row q-mb-md"
-        style="
-          width: 180px;
-          height: 180px;
-          border-radius: 50%;
-          border: 2px solid #9c8449;
-        "
-      >
-        <q-img src="src/assets/icon.ico" style="width: 120px; height: 120px" />
+      <div class="flex flex-center justify-center row q-mb-md">
+        <q-img
+          src="src/assets/bbel_full_logo.png"
+          style="width: 260px; height: 200px"
+          :ratio="16 / 9"
+        />
       </div>
       <div class="text-h5 q-mb-md flex flex-center">
-        Login to continue {{ locally ? "(Locally)" : "" }}
+        {{ $t("pages.login.titles.login") }}
+        {{ locally ? `(${$t("pages.login.titles.locally")})` : "" }}
       </div>
       <q-form class="t-login-form col-md-4">
         <q-banner
@@ -31,7 +28,7 @@
         <q-input
           outlined
           v-model="email_username"
-          label="Email or Username"
+          :label="$t('pages.login.inputs.labels.email_username')"
           type="email"
           class="full-width q-mb-md"
           dark
@@ -40,32 +37,53 @@
         <q-input
           outlined
           v-model="password"
-          label="Password"
+          :label="$t('pages.login.inputs.labels.password')"
           type="password"
           class="full-width q-mb-md"
           dark
           color="white"
         />
         <small>
-          don't have an account?
-          <router-link to="/auth/register">Register</router-link>
+          {{ $t("pages.login.messages.dont_have_account") }}
+          <router-link to="/auth/register">{{
+            $t("pages.login.titles.register")
+          }}</router-link>
         </small>
         <q-btn
           style="background: #9c8449; color: white"
-          label="Login"
+          :label="$t('pages.login.buttons.login')"
           class="full-width q-mb-md q-mt-sm"
           @click="login"
           :loading="loading"
           :percentage="0"
+          color="accent"
         />
 
         <q-btn
-          :label="'Sign in ' + (locally ? 'online' : 'locally')"
+          :label="
+            locally
+              ? $t('pages.login.buttons.login_online')
+              : $t('pages.login.buttons.login_locally')
+          "
           icon="account_circle"
           class="full-width"
           @click="locally = !locally"
         />
       </q-form>
+    </div>
+    <div class="absolute-bottom-right">
+      <q-select
+        :label="$t('pages.login.inputs.labels.language')"
+        outlined
+        dense
+        v-model="lang"
+        :options="langOptions"
+        color="white"
+        dark
+        class="q-mb-sm q-mr-sm"
+        style="min-width: 140px"
+        @update:model-value="changeLang($event)"
+      />
     </div>
   </q-page>
 </template>
@@ -74,10 +92,12 @@ import { ref, defineComponent } from "vue";
 import login from "src/functions/login";
 import Cookies from "js-cookie";
 import { useRouter } from "vue-router";
+import { getConfig } from "src/functions/configs";
 
 export default defineComponent({
   name: "AuthLoginPage",
-  setup() {
+  data() {
+    this.$i18n.locale = localStorage.getItem("lang") ?? "en-US";
     const router = useRouter();
     if (Cookies.get("token")) router.push("/main/tasks");
     return {
@@ -86,6 +106,8 @@ export default defineComponent({
       loading: ref(false),
       error: ref(""),
       locally: ref(false),
+      lang: ref(localStorage.getItem("lang") ?? "en-US"),
+      langOptions: ["en-US", "es-ES", "pt-BR"],
     };
   },
   methods: {
@@ -113,15 +135,36 @@ export default defineComponent({
             this.loading = false;
             return;
           }
-          console.log("Login success", res);
-          this.loading = false;
-          this.$router.push("/main/tasks");
+          getConfig("mainView")
+            .then((config) => {
+              getConfig("language")
+                .then((locale) => {
+                  this.$i18n.locale = locale ?? "en-US";
+                  if (config) {
+                    this.$router.push("/main/" + config);
+                  } else {
+                    this.$router.push("/main/tasks");
+                  }
+                })
+                .catch((err) => {
+                  console.log("Error getting locale", err);
+                  this.$router.push("/main/tasks");
+                });
+            })
+            .catch((err) => {
+              console.log("Error getting config", err);
+              this.$router.push("/main/tasks");
+            });
         })
         .catch((err) => {
           console.log("Login error", err);
           this.loading = false;
           this.error = err.message;
         });
+    },
+    changeLang(lang) {
+      localStorage.setItem("lang", lang);
+      this.$i18n.locale = lang;
     },
   },
 });

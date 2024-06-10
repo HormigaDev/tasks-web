@@ -1,7 +1,7 @@
 <template>
-  <q-dialog persistent v-model="showCategories" dark>
+  <q-dialog persistent v-model="showCategories" :dark="theme === 'dark'">
     <q-card
-      dark
+      :dark="theme === 'dark'"
       style="min-width: 80%; position: relative; height: 100%; max-height: 80vh"
       class="q-mt-xl"
       v-if="!newCategory"
@@ -12,7 +12,7 @@
         dense
         icon="close"
         class="absolute-top-right q-mr-xs q-mt-xs"
-        color="white"
+        :color="theme === 'dark' ? 'white' : 'dark'"
         @click="
           () => {
             $emit('update:show', false);
@@ -23,13 +23,18 @@
       />
       <q-card-section class="flex">
         <div class="text-h6">
-          Categories
+          {{ $t("pages.tasks.titles.categories") }}
           <q-btn
             class="q-ml-md q-pl-xs q-pr-xs q-pt-none q-pb-none"
             size="sm"
             color="grey-8"
             icon="add"
-            @click="newCategory = true"
+            @click="
+              () => {
+                newCategory = true;
+                editing = false;
+              }
+            "
           />
         </div>
       </q-card-section>
@@ -38,7 +43,11 @@
           <q-item
             v-for="category in categories"
             :key="category.name"
-            class="q-mb-sm category-item-hover"
+            :class="{
+              'q-mb-sm': true,
+              'category-item-hover': true,
+              't-light': theme === 'light',
+            }"
           >
             <q-item-section>
               <div class="row">
@@ -71,7 +80,7 @@
       </q-card-section>
     </q-card>
     <q-card
-      dark
+      :dark="theme === 'dark'"
       style="min-width: 80%; position: relative; height: 100%; max-height: 80vh"
       class="q-mt-xl"
       v-else
@@ -82,7 +91,7 @@
         dense
         icon="close"
         class="absolute-top-right q-mr-xs q-mt-xs"
-        color="white"
+        :color="theme === 'dark' ? 'white' : 'dark'"
         @click="
           () => {
             resetCategory();
@@ -92,7 +101,13 @@
         style="z-index: 99"
       />
       <q-card-section class="flex">
-        <div class="text-h6">New Category</div>
+        <div class="text-h6">
+          {{
+            !editing
+              ? $t("pages.tasks.titles.new_category")
+              : $t("pages.tasks.titles.edit_category")
+          }}
+        </div>
       </q-card-section>
       <q-card-section>
         <q-banner
@@ -111,16 +126,20 @@
           v-model="category[input.prop]"
           :label="input.label"
           dense
-          dark
+          :dark="theme === 'dark'"
           :maxlength="input.limit"
-          color="white"
+          :color="theme === 'dark' ? 'white' : 'dark'"
           clearable
           class="q-mb-md"
           :error-message="input['error-message']"
           :error="!valids[input.rule]"
         />
         <q-btn
-          label="Save"
+          :label="
+            editing
+              ? $t('pages.tasks.buttons.update')
+              : $t('pages.tasks.buttons.save')
+          "
           color="grey-8"
           @click="saveCategory(selectedId)"
           class="q-mt-md"
@@ -150,9 +169,12 @@ export default {
   name: "CategoriesComponent",
   props: {
     show: Boolean,
+    _theme: String,
   },
   emits: ["update:show"],
-  setup(props) {
+  data(props) {
+    const theme = ref(props._theme);
+    const editing = ref(false);
     const $q = useQuasar();
     const categories = ref([]);
     const showCategories = ref(props.show);
@@ -168,31 +190,30 @@ export default {
       category_color: true,
       category_icon: true,
     });
+
     const inputs = [
       {
-        label: "Name",
+        label: this.$t("pages.tasks.inputs.labels.category_name"),
         prop: "name",
         type: "text",
         rule: "category_name",
-        "error-message": "The name must be between 1 and 50 characters long.",
+        "error-message": this.$t("pages.tasks.messages.invalid_category_name"),
         limit: 50,
       },
       {
-        label: "Color",
+        label: this.$t("pages.tasks.inputs.labels.category_color"),
         prop: "color",
         type: "text",
         rule: "category_color",
-        "error-message":
-          "The color must be a 6-digit hexadecimal value without the # symbol.",
+        "error-message": this.$t("pages.tasks.messages.invalid_category_color"),
         limit: 6,
       },
       {
-        label: "Icon",
+        label: this.$t("pages.tasks.inputs.labels.category_icon"),
         prop: "icon",
         type: "text",
         rule: "category_icon",
-        "error-message":
-          "The icon must be between 1 and 20 characters long and alphanumeric.",
+        "error-message": this.$t("pages.tasks.messages.invalid_category_icon"),
         limit: 20,
       },
     ];
@@ -209,6 +230,13 @@ export default {
       () => props.show,
       (val) => {
         showCategories.value = val;
+      }
+    );
+
+    watch(
+      () => props._theme,
+      (val) => {
+        theme.value = val;
       }
     );
 
@@ -235,15 +263,23 @@ export default {
                 if (status === 200) {
                   categories.value = data.categories;
                   this.resetCategory();
+                  this.$q.notify({
+                    message: this.$t("pages.tasks.messages.category_saved"),
+                    color: "green-5",
+                    position: "bottom-right",
+                    timeout: 2000,
+                  });
                 }
               });
               newCategory.value = false;
             } else {
-              error.value = "There was an error saving the category.";
+              error.value = this.$t(
+                "pages.tasks.messages.error_saving_category"
+              );
             }
           })
           .catch((err) => {
-            error.value = err.message || "An error occurred.";
+            error.value = err.message || this.$t("pages.tasks.messages.error");
           });
       } else {
         editCategory(
@@ -257,16 +293,25 @@ export default {
               getCategories().then(({ data, status }) => {
                 if (status === 200) {
                   categories.value = data.categories;
+                  this.resetCategory();
+                  this.$q.notify({
+                    message: this.$t("pages.tasks.messages.category_updated"),
+                    color: "green-5",
+                    position: "bottom-right",
+                    timeout: 2000,
+                  });
                 }
               });
               newCategory.value = false;
             } else {
               console.log(status);
-              error.value = "There was an error saving the category.";
+              error.value = this.$t(
+                "pages.tasks.messages.error_saving_category"
+              );
             }
           })
           .catch((err) => {
-            error.value = err.message || "An error occurred.";
+            error.value = err.message || this.$t("pages.tasks.messages.error");
           });
       }
       this.selectedId = null;
@@ -279,27 +324,35 @@ export default {
             getCategories().then(({ data, status }) => {
               if (status === 200) {
                 categories.value = data.categories;
+                this.$q.notify({
+                  message: this.$t("pages.tasks.messages.category_deleted"),
+                  color: "green-5",
+                  position: "bottom-right",
+                  timeout: 2000,
+                });
               }
             });
           } else {
-            error.value = "There was an error deleting the category.";
+            error.value = this.$t(
+              "pages.tasks.messages.error_deleting_category"
+            );
           }
         })
         .catch((err) => {
-          error.value = err.message || "An error occurred.";
+          error.value = err.message || this.$t("pages.tasks.messages.error");
         });
     };
     const confirmDelete = (id) => {
       $q.dialog({
-        title: "Delete Category",
-        message: "Are you sure you want to delete this category?",
+        title: this.$t("pages.tasks.titles.confirm_delete_category"),
+        message: this.$t("pages.tasks.messages.confirm_category_delete"),
         dark: true,
         ok: {
-          label: "Yes",
-          color: "red",
+          label: this.$t("pages.tasks.buttons.yes"),
+          color: "red-5",
         },
         cancel: {
-          label: "No",
+          label: this.$t("pages.tasks.buttons.no"),
           color: "grey-8",
         },
       }).onOk(() => {
@@ -308,6 +361,7 @@ export default {
     };
 
     return {
+      theme,
       selectedId: ref(0),
       categories,
       showCategories,
@@ -320,6 +374,7 @@ export default {
       saveType: ref("new"),
       deleteThisCategory,
       confirmDelete,
+      editing,
     };
   },
   methods: {
@@ -328,6 +383,7 @@ export default {
       this.category.name = category.name;
       this.category.color = category.color;
       this.category.icon = category.icon;
+      this.editing = true;
       this.newCategory = true;
     },
     resetCategory() {
@@ -343,6 +399,11 @@ export default {
   cursor: pointer;
   &:hover {
     background-color: #333;
+  }
+}
+.category-item-hover.t-light {
+  &:hover {
+    background-color: #ececec;
   }
 }
 </style>

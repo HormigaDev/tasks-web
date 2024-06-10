@@ -1,33 +1,94 @@
 [
-  { "label": "Alarm", "value": "alarm" },
-  { "label": "Bell", "value": "bell" },
-  { "label": "Siren", "value": "siren" },
-  { "label": "Whistle", "value": "whistle" },
-  { "label": "Horn", "value": "horn" },
-  { "label": "Buzzer", "value": "buzzer" },
-  { "label": "Chime", "value": "chime" },
-  { "label": "Alert", "value": "alert" },
-  { "label": "Beep", "value": "beep" },
-  { "label": "Klaxon", "value": "klaxon" },
-  { "label": "Drumroll", "value": "drumroll" },
-  { "label": "Tornado Siren", "value": "tornado_siren" },
-  { "label": "Fire Alarm", "value": "fire_alarm" },
-  { "label": "Police Siren", "value": "police_siren" },
-  { "label": "Ambulance Siren", "value": "ambulance_siren" },
-  { "label": "Car Alarm", "value": "car_alarm" },
-  { "label": "Air Raid Siren", "value": "air_raid_siren" },
-  { "label": "Warning Bells", "value": "warning_bells" },
-  { "label": "School Bell", "value": "school_bell" },
-  { "label": "Doorbell", "value": "doorbell" },
-  { "label": "Smoke Alarm", "value": "smoke_alarm" },
-  { "label": "Nuclear Alarm", "value": "nuclear_alarm" },
-  { "label": "Cuckoo Clock", "value": "cuckoo_clock" },
-  { "label": "Foghorn", "value": "foghorn" },
-  { "label": "Ringing Alarm", "value": "ringing_alarm" },
-  { "label": "Train Horn", "value": "train_horn" },
-  { "label": "Church Bell", "value": "church_bell" },
-  { "label": "Tsunami Alarm", "value": "tsunami_alarm" },
-  { "label": "Submarine Alarm", "value": "submarine_alarm" },
-  { "label": "Emergency Alarm", "value": "emergency_alarm" },
-  { "label": "Nuclear Siren", "value": "nuclear_siren" }
+  {
+    "value": 1,
+    "label": "Arabian mystery harp notification"
+  },
+  {
+    "value": 2,
+    "label": "Arcade magic notification"
+  },
+  {
+    "value": 3,
+    "label": "Bell notification"
+  },
+  {
+    "value": 4,
+    "label": "Bubble pop up alert notification"
+  },
+  {
+    "value": 5,
+    "label": "Clear announce tones"
+  },
+  {
+    "value": 6,
+    "label": "Confirmation tone"
+  },
+  {
+    "value": 7,
+    "label": "Correct answer reward"
+  },
+  {
+    "value": 8,
+    "label": "Correct answer tone"
+  },
+  {
+    "value": 9,
+    "label": "Digital quick tone"
+  },
+  {
+    "value": 10,
+    "label": "Doorbell single press"
+  },
+  {
+    "value": 11,
+    "label": "Double beep tone alert"
+  },
+  {
+    "value": 12,
+    "label": "Dry pop up notification alert"
+  },
+  {
+    "value": 13,
+    "label": "Game notification wave alarm"
+  },
+  {
+    "value": 14,
+    "label": "Guitar notification alert"
+  },
+  {
+    "value": 15,
+    "label": "Happy bells notification"
+  },
+  {
+    "value": 16,
+    "label": "Interface hint notification"
+  },
+  {
+    "value": 17,
+    "label": "Interface option select"
+  },
+  {
+    "value": 18,
+    "label": "Magic marimba"
+  },
+  {
+    "value": 19,
+    "label": "Positive notification"
+  },
+  {
+    "value": 20,
+    "label": "Sci fi click"
+  },
+  {
+    "value": 21,
+    "label": "Sci fi confirmation"
+  },
+  {
+    "value": 22,
+    "label": "Sci fi reject notification"
+  },
+  {
+    "value": 23,
+    "label": "Access allowed tone"
+  }
 ]

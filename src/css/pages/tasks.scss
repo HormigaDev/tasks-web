@@ -7,6 +7,9 @@
 .t-task {
   background-color: $bg-lvl-4;
 }
+.t-task.t-light {
+  background-color: $t-light-bg-lvl-4 !important;
+}
 .t-tasks-task {
   z-index: 999;
 }
@@ -21,6 +24,9 @@
   background-color: $bg-lvl-5;
   padding-right: 64px;
   padding-left: 64px;
+}
+.t-task-card.t-light {
+  background-color: $t-light-bg-lvl-5 !important;
 }
 .t-tasks-task-options {
   position: absolute;

@@ -1,33 +1,41 @@
 <template>
-  <q-dialog persistent v-model="showForm" dark>
-    <q-card style="min-width: 560px" dark>
+  <q-dialog persistent v-model="showForm" :dark="theme === 'dark'">
+    <q-card style="min-width: 560px" :dark="theme === 'dark'">
       <q-card-section>
-        <div class="text-h6">New Affair Timeline</div>
+        <div class="text-h6">
+          {{
+            editing
+              ? $t("pages.affairs.titles.edit_affair_timeline")
+              : $t("pages.affairs.titles.new_affair_timeline")
+          }}
+        </div>
       </q-card-section>
 
       <q-card-section class="q-pt-none">
         <q-form>
           <q-input
-            dark
+            :dark="theme === 'dark'"
             dense
             outlined
             v-model="newAffair.title"
-            label="Affair title"
+            :label="$t('pages.affairs.inputs.labels.affair_timeline_title')"
             type="text"
             class="q-mt-md"
-            color="white"
-            label-color="grey-7"
+            :color="theme === 'dark' ? 'white' : 'dark'"
+            :label-color="theme === 'dark' ? 'grey-7' : 'grey-9'"
           />
           <q-input
-            dark
+            :dark="theme === 'dark'"
             dense
             outlined
             v-model="newAffair.description"
-            label="Affair description"
+            :label="
+              $t('pages.affairs.inputs.labels.affair_timeline_description')
+            "
             type="textarea"
             class="q-mt-md"
-            color="white"
-            label-color="grey-7"
+            :color="theme === 'dark' ? 'white' : 'dark'"
+            :label-color="theme === 'dark' ? 'grey-7' : 'grey-9'"
           />
         </q-form>
       </q-card-section>
@@ -35,8 +43,8 @@
       <q-card-actions align="right" class="text-primary">
         <q-btn
           flat
-          color="grey-5"
-          label="Cancel"
+          :color="theme === 'dark' ? 'grey-5' : 'grey-9'"
+          :label="$t('pages.affairs.buttons.cancel')"
           @click="
             () => {
               resetForm();
@@ -44,7 +52,15 @@
             }
           "
         />
-        <q-btn flat label="Save" @click="saveTimeline" />
+        <q-btn
+          flat
+          :label="
+            editing
+              ? $t('pages.affairs.buttons.update')
+              : $t('pages.affairs.buttons.save')
+          "
+          @click="saveTimeline"
+        />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -60,9 +76,11 @@ export default {
   name: "NewAffairTimelineComponent",
   props: {
     show: Boolean,
+    _theme: String,
   },
   emits: ["update:show"],
-  setup(props) {
+  data(props) {
+    const theme = ref(props._theme);
     const showForm = ref(props.show);
     const editing = ref(false);
     const newAffair = ref({
@@ -71,7 +89,6 @@ export default {
       id: "",
     });
     const timeline = storage.get("editingTimeline");
-    console.log(timeline.title);
     if (timeline) {
       editing.value = true;
       newAffair.value.title = timeline.title;
@@ -84,8 +101,15 @@ export default {
         showForm.value = val;
       }
     );
+    watch(
+      () => props._theme,
+      (val) => {
+        theme.value = val;
+      }
+    );
 
     return {
+      theme,
       showForm,
       newAffair,
       editing,

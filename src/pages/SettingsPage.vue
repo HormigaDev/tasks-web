@@ -1,30 +1,39 @@
 <template>
-  <q-page class="t-settings">
+  <q-page :class="{ 't-settings': true, 't-light': theme !== 'dark' }">
     <q-splitter
       v-model="splitterModel"
       :limits="[16, 16]"
       style="height: calc(100vh - 50px)"
     >
       <template v-slot:before>
-        <q-tabs v-model="tab" vertical inline-label dark class="text-grey-6">
-          <q-tab icon="account_circle" name="account" label="Account" />
-          <q-tab icon="tune" name="preferences" label="Preferences" />
+        <q-tabs
+          v-model="tab"
+          vertical
+          inline-label
+          :dark="theme === 'dark'"
+          :class="theme === 'dark' ? 'text-grey-6' : 'text-grey-10'"
+        >
+          <q-tab
+            icon="account_circle"
+            name="account"
+            :label="$t('pages.settings.titles.account')"
+          />
+          <q-tab
+            icon="tune"
+            name="preferences"
+            :label="$t('pages.settings.titles.preferences')"
+          />
           <q-tab
             icon="notifications"
             name="notifications"
-            label="Notifications"
+            :label="$t('pages.settings.titles.notifications')"
           />
-          <q-tab icon="sync" name="syncronization" label="Syncronization" />
-          <div class="flex row justify-center absolute-bottom">
-            <q-btn
-              label="Save changes"
-              color="dark"
-              class="q-mb-md text-grey-2"
-              style="width: 140px"
-              size="sm"
-              icon="save"
-            />
-          </div>
+          <q-tab
+            class="t-disabled"
+            icon="sync"
+            name="syncronization"
+            :label="$t('pages.settings.titles.syncronization')"
+          />
         </q-tabs>
       </template>
 
@@ -38,18 +47,32 @@
           transition-next="jump-up"
           dark
           style="height: 100%"
-          class="t-tab-panels"
+          :class="{ 't-tab-panels': true, 't-light': theme !== 'dark' }"
         >
-          <AccountTab name="account" />
-          <PreferencesTab name="preferences" />
-          <NotificationsTab name="notifications" />
+          <AccountTab
+            name="account"
+            :_theme="theme"
+            :_configurations="configurations"
+          />
+          <PreferencesTab
+            name="preferences"
+            :_theme="theme"
+            :_configurations="configurations"
+          />
+          <NotificationsTab
+            name="notifications"
+            :_theme="theme"
+            :_configurations="configurations"
+          />
         </q-tab-panels>
       </template>
     </q-splitter>
   </q-page>
 </template>
 <script>
-import { ref, defineComponent } from "vue";
+import { ref, defineComponent, onBeforeUnmount } from "vue";
+import storage from "src/functions/virtualStorage";
+import { Loop } from "src/functions/utils";
 
 import AccountTab from "src/components/Settings/AccountTab.vue";
 import PreferencesTab from "src/components/Settings/PreferencesTab.vue";
@@ -62,7 +85,20 @@ export default defineComponent({
     NotificationsTab,
   },
   setup() {
+    const theme = ref(storage.get("theme"));
+    const configurations = ref(storage.get("configurations"));
+    const loop = new Loop(() => {
+      theme.value = storage.get("theme");
+      configurations.value = storage.get("configurations");
+    });
+    loop.start();
+    onBeforeUnmount(() => {
+      loop.stop();
+    });
+
     return {
+      configurations,
+      theme,
       splitterModel: ref(16),
       tab: ref("account"),
     };

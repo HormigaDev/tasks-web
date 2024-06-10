@@ -1,7 +1,7 @@
 <template>
-  <q-dialog persistent v-model="showTasks" dark>
+  <q-dialog persistent v-model="showTasks" :dark="theme === 'dark'">
     <q-card
-      dark
+      :dark="theme === 'dark'"
       style="min-width: 80%; position: relative; height: 100%; max-height: 80vh"
       class="q-mt-xl"
     >
@@ -11,7 +11,7 @@
         dense
         icon="close"
         class="absolute-top-right q-mr-xs q-mt-xs"
-        color="white"
+        :color="theme === 'dark' ? 'white' : 'dark'"
         @click="
           () => {
             $emit('update:show', false);
@@ -22,7 +22,7 @@
       />
       <q-card-section class="flex">
         <div class="text-h6">
-          Tasks
+          {{ $t("pages.calendar.titles.tasks") }}
           <q-btn
             class="q-ml-md q-pl-xs q-pr-xs q-pt-none q-pb-none"
             size="sm"
@@ -33,6 +33,21 @@
         </div>
       </q-card-section>
       <!-- Aquí colocamos la lista de las tareas de esta fecha -->
+      <div
+        v-if="tasks.length === 0"
+        class="absolute-top-left flex flex-center"
+        style="width: 100%; height: 60%; overflow: hidden; top: 20%"
+      >
+        <div
+          :class="{
+            'text-h4': true,
+            'text-grey-7': theme === 'dark',
+            'text-grey-6': theme !== 'dark',
+          }"
+        >
+          {{ $t("pages.affairs.titles.nothing_to_show") }}
+        </div>
+      </div>
       <q-card-section style="overflow: auto; max-height: 60vh">
         <q-list>
           <q-item
@@ -62,6 +77,7 @@
 <script>
 import { ref, watch } from "vue";
 import storage from "src/functions/virtualStorage";
+import EventBus from "src/functions/EventBus";
 
 export default {
   name: "CalendarTasks",
@@ -69,27 +85,29 @@ export default {
     show: Boolean,
     taskList: Array,
     taskdate: String,
+    _theme: String,
   },
   emits: ["update:show"],
-  setup(props) {
+  data(props) {
+    const theme = ref(props._theme);
     const showTasks = ref(props.show);
     const tasks = ref(props.taskList);
     const date = ref(props.taskdate);
     const priorities = {
       urgent: {
-        name: "Urgent",
+        name: this.$t("pages.calendar.titles.priorities.urgent"),
         color: "negative",
       },
       high: {
-        name: "High",
+        name: this.$t("pages.calendar.titles.priorities.high"),
         color: "warning",
       },
       normal: {
-        name: "Normal",
+        name: this.$t("pages.calendar.titles.priorities.normal"),
         color: "primary",
       },
       low: {
-        name: "Low",
+        name: this.$t("pages.calendar.titles.priorities.low"),
         color: "grey-5",
       },
     };
@@ -99,7 +117,19 @@ export default {
         showTasks.value = val;
       }
     );
+    watch(
+      () => props._theme,
+      (val) => {
+        theme.value = val;
+      }
+    );
+
+    EventBus.on("task-added", () => {
+      showTasks.value = false;
+    });
+
     return {
+      theme,
       showTasks,
       tasks,
       priorities,

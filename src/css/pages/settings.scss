@@ -1,6 +1,9 @@
 .t-tab-panels {
   background-color: $bg-lvl-3;
 }
+.t-tab-panels.t-light {
+  background-color: $t-light-bg-lvl-3;
+}
 .t-settings {
   .q-splitter__separator,
   .q-splitter__separator-area {

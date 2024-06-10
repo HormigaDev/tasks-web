@@ -8,52 +8,77 @@
       @update:showtask="viewTask"
       @update:newtask="newTask"
       v-if="showTasks"
+      :_theme="theme"
     />
     <TaskComponent
       :task="task"
       :show="showTask"
       @update:show="showTask = $event"
       @update:edittask="editTask"
+      :_theme="theme"
     />
     <NewTaskComponent
       :show="showNewTask"
       :taskdate="newTaskDate"
       @update:show="showNewTask = $event"
+      :_theme="theme"
     />
     <div class="q-mt-sm flex row justify-center" style="height: 32px">
       <q-icon
         name="chevron_left"
-        class="cursor-pointer calendar-chevron"
+        :class="{
+          'cursor-pointer': true,
+          'calendar-chevron': true,
+          'text-dark': theme !== 'dark',
+        }"
         @click="selectMonth('prev')"
       />
       <div class="text-h6 text-center" style="min-width: 320px">
-        {{ months[date.month] }} of {{ date.year }}
+        {{
+          $t(
+            `pages.calendar.titles.months.${("0" + (date.month + 1)).slice(-2)}`
+          )
+        }}
+        {{ $t("pages.calendar.words.of") }} {{ date.year }}
       </div>
       <q-icon
         name="chevron_right"
-        class="cursor-pointer calendar-chevron"
+        :class="{
+          'cursor-pointer': true,
+          'calendar-chevron': true,
+          'text-dark': theme !== 'dark',
+        }"
         @click="selectMonth('next')"
       />
     </div>
     <div>
       <div class="calendar-row q-mt-sm">
-        <div v-for="_day in days" :key="_day">{{ _day }}day</div>
+        <div v-for="_day in days" :key="_day">
+          {{ $t(`pages.calendar.titles.weekdays.${_day}`) }}
+        </div>
       </div>
       <div class="calendar-row" style="overflow: auto">
         <div
           v-for="(day, i) in calendar"
           :key="i"
-          :class="
-            ('0' + day).slice(-2) === ('0' + date.day).slice(-2) &&
-            now.getMonth() === date.month &&
-            now.getFullYear() === date.year
-              ? 'calendar-day calendar-day-now'
-              : 'calendar-day' + (day === '' ? ' calendar-day-empty' : '')
-          "
+          :class="{
+            'calendar-day': true,
+            'calendar-day-empty': day === '',
+            'calendar-day-now':
+              ('0' + day).slice(-2) === ('0' + date.day).slice(-2) &&
+              now.getMonth() === date.month &&
+              now.getFullYear() === date.year,
+            't-light': theme !== 'dark',
+          }"
           @click="day !== '' ? showTasksData(day) : null"
         >
           <small
-            :class="'calendar-id ' + (isWeekend(day) ? 'calendar-weekend' : '')"
+            :class="{
+              'calendar-id': true,
+              'calendar-weekend': isWeekend(day),
+              't-light': theme !== 'dark',
+              't-bold': theme !== 'dark',
+            }"
             >{{ day }}</small
           >
           <div
@@ -80,7 +105,13 @@
                   task.status === 'ended' ? 'check' : task.categories[0].icon
                 "
                 v-if="canActualize"
-                :color="task.status === 'ended' ? 'green-5' : 'white'"
+                :color="
+                  task.status === 'ended'
+                    ? 'green-5'
+                    : theme === 'dark'
+                    ? 'white'
+                    : 'grey-8'
+                "
               />
             </div>
             <div
@@ -96,12 +127,13 @@
   </q-page>
 </template>
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, onBeforeUnmount } from "vue";
 import { getCalendar } from "src/functions/getCalendar.js";
 import { useQuasar, date as dt } from "quasar";
 import { getTasksByMonth } from "src/functions/task";
 import EventBus from "src/functions/EventBus";
 import storage from "src/functions/virtualStorage";
+import { Loop } from "src/functions/utils";
 
 import CalendarTasks from "src/components/CalendarTasks.vue";
 import TaskComponent from "src/components/TaskComponent.vue";
@@ -118,6 +150,8 @@ export default defineComponent({
     $q.loading.hide();
   },
   setup() {
+    const theme = ref(storage.get("theme"));
+
     const calendar = ref(getCalendar());
     const canActualize = ref(true);
     const months = {
@@ -135,7 +169,7 @@ export default defineComponent({
       11: "December",
     };
     const showTasks = ref(false);
-    const days = ["Sun", "Mon", "Tues", "Wednes", "Thues", "Fri", "Satur"];
+    const days = ["sun", "mon", "tues", "wednes", "thurs", "fri", "satur"];
     const now = new Date();
     const newTaskDate = ref("");
     const data = ref([]);
@@ -157,12 +191,22 @@ export default defineComponent({
           console.log(error);
         });
     };
-    actualizeTasks();
-    setInterval(() => {
+    const loop = new Loop(() => {
+      theme.value = storage.get("theme");
       actualizeTasks();
-    }, 1000);
+    });
+    loop.start();
+
+    onBeforeUnmount(() => {
+      loop.stop();
+    });
 
     EventBus.on("deleted-task", () => {
+      actualizeTasks();
+      showTasks.value = false;
+    });
+
+    EventBus.on("task-added", () => {
       actualizeTasks();
       showTasks.value = false;
     });
@@ -173,6 +217,7 @@ export default defineComponent({
     });
 
     return {
+      theme,
       now,
       data,
       tasks,
@@ -225,8 +270,6 @@ export default defineComponent({
       let date = new Date(this.date.year, this.date.month, day);
       return date.getDay() === 0 || date.getDay() === 6;
     },
-    filterTasks(day) {},
-    setIconsAndColors(tasks) {},
     searchInDay(day) {
       let tasks = this.tasks
         .filter((task) => {
@@ -300,25 +343,10 @@ export default defineComponent({
     },
     getColor(date, status) {
       if (status === "ended") return "green-5";
-      let color = "blue-5";
-      let [y, m, d] = date.split("-");
-      d = Number(d);
-      let now = new Date();
-      if (
-        d == now.getDate() &&
-        m == now.getMonth() + 1 &&
-        y == now.getFullYear()
-      ) {
-        color = "orange-5";
-      }
-      if (
-        d < now.getDate() &&
-        m <= now.getMonth() + 1 &&
-        y <= now.getFullYear()
-      ) {
-        color = "red-5";
-      }
-      return color;
+      let now = new Date().toISOString().split("T")[0];
+      if (date < now) return "red-5";
+      if (date > now) return "blue-5";
+      return "orange-5";
     },
     editTask() {
       this.showTask = false;

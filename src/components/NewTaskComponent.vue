@@ -1,8 +1,14 @@
 <template>
-  <q-dialog persistent v-model="showForm" dark>
-    <q-card style="min-width: 560px" dark>
+  <q-dialog persistent v-model="showForm" :dark="theme === 'dark'">
+    <q-card style="min-width: 560px" :dark="theme === 'dark'">
       <q-card-section>
-        <div class="text-h6">New Task</div>
+        <div class="text-h6">
+          {{
+            !editing
+              ? $t("pages.tasks.titles.new_task")
+              : $t("pages.tasks.titles.edit_task")
+          }}
+        </div>
       </q-card-section>
 
       <q-card-section class="q-pt-none">
@@ -10,56 +16,56 @@
           <q-input
             outlined
             v-model="newTask.title"
-            dark
+            :dark="theme === 'dark'"
             dense
-            label="Title"
+            :label="$t('pages.tasks.inputs.labels.title')"
             class="q-mt-md"
-            color="white"
+            :color="theme === 'dark' ? 'white' : 'dark'"
             label-color="grey-7"
             maxlength="100"
           />
           <q-input
-            dark
+            :dark="theme === 'dark'"
             dense
             outlined
             v-model="newTask.description"
-            label="Description"
+            :label="$t('pages.tasks.inputs.labels.description')"
             type="textarea"
             class="q-mt-md"
-            color="white"
+            :color="theme === 'dark' ? 'white' : 'dark'"
             label-color="grey-7"
             maxlength="5000"
           />
           <q-select
-            dark
+            :dark="theme === 'dark'"
             dense
             outlined
             v-model="newTask.priority"
-            label="Priority"
+            :label="$t('pages.tasks.inputs.labels.priority')"
             :options="priorities"
             class="q-mt-md"
-            color="white"
+            :color="theme === 'dark' ? 'white' : 'dark'"
             label-color="grey-7"
           />
           <q-select
-            dark
+            :dark="theme === 'dark'"
             outlined
             dense
             v-model="newTask.categories"
             multiple
             :options="categories"
-            label="Categories"
+            :label="$t('pages.tasks.inputs.labels.categories')"
             class="q-mt-md"
-            color="white"
+            :color="theme === 'dark' ? 'white' : 'dark'"
             label-color="grey-7"
           />
           <q-input
-            dark
-            color="white"
+            :dark="theme === 'dark'"
+            :color="theme === 'dark' ? 'white' : 'dark'"
             outlined
             dense
             v-model="newTask.date"
-            label="Date"
+            :label="$t('pages.tasks.inputs.labels.date')"
             class="q-mt-md"
             readonly
             label-color="grey-7"
@@ -72,7 +78,7 @@
             <q-date
               v-if="showCalendar"
               dense
-              dark
+              :dark="theme === 'dark'"
               minimal
               v-model="date"
               @update:model-value="updateDate"
@@ -82,10 +88,19 @@
       </q-card-section>
 
       <q-card-actions align="right" class="text-primary">
-        <q-btn flat color="grey-5" label="Cancel" @click="cancelNewTask" />
         <q-btn
           flat
-          label="Save"
+          :color="theme === 'dark' ? 'grey-5' : 'grey-9'"
+          :label="$t('pages.tasks.buttons.cancel')"
+          @click="cancelNewTask"
+        />
+        <q-btn
+          flat
+          :label="
+            !editing
+              ? $t('pages.tasks.buttons.save')
+              : $t('pages.tasks.buttons.update')
+          "
           @click="editing ? editTask() : saveNewTask()"
         />
       </q-card-actions>
@@ -95,41 +110,62 @@
 
 <script>
 import { date } from "quasar";
-import { onMounted, ref, watch } from "vue";
+import { onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { getCategories } from "src/functions/categories";
 import { newTask, newTask as saveTask, editTask } from "src/functions/task";
+import { Loop } from "src/functions/utils";
 import EventBus from "src/functions/EventBus";
 import storage from "src/functions/virtualStorage";
-
-const rules = {
-  title: {
-    exp: /^.{10,100}$/i,
-    message: "Title must be between 10 and 100 characters",
-  },
-  description: {
-    exp: /^.{20,5000}$/i,
-    message: "Description must be between 20 and 5000 characters",
-  },
-  date: {
-    exp: /^(\d{4})-(\d{2})-(\d{2})$/i,
-    message: "Invalid date format",
-  },
-};
 
 export default {
   name: "NewTaskComponent",
   props: {
     show: Boolean,
+    _theme: String,
+    _configurations: Object,
   },
   emits: ["update:show"],
-  setup(props) {
+  data(props) {
+    const theme = ref(props._theme);
+    const configurations = ref(props._configurations);
+    const priorities = [
+      {
+        label: this.$t("pages.tasks.inputs.options.priorities.low"),
+        value: 1,
+      },
+      {
+        label: this.$t("pages.tasks.inputs.options.priorities.normal"),
+        value: 2,
+      },
+      {
+        label: this.$t("pages.tasks.inputs.options.priorities.high"),
+        value: 3,
+      },
+      {
+        label: this.$t("pages.tasks.inputs.options.priorities.urgent"),
+        value: 4,
+      },
+    ];
+    const rules = {
+      title: {
+        exp: /^.{10,100}$/i,
+        message: this.$t("pages.tasks.messages.invalid_title"),
+      },
+      description: {
+        exp: /^.{20,5000}$/i,
+        message: this.$t("pages.tasks.messages.invalid_description"),
+      },
+      date: {
+        exp: /^(\d{4})-(\d{2})-(\d{2})$/i,
+        message: this.$t("pages.tasks.messages.invalid_date"),
+      },
+    };
     const categories = ref([]);
     const editing = ref(false);
 
     const showForm = ref(props.show);
     const now = new Date();
 
-    console.log(storage.get("current_date"));
     let [year, month, day] = storage.get("current_date")?.split("-") ?? [
       "2000",
       "01",
@@ -148,23 +184,42 @@ export default {
           (now.getMonth() + 1)
         ).slice(-2)}/${now.getFullYear()}`
     );
-    setInterval(() => {
+    const priorityWeights = {
+      low: 1,
+      normal: 2,
+      high: 3,
+      urgent: 4,
+    };
+    const newTask = ref({
+      title: "",
+      description: "",
+      priority: configurations.value?.defaultPriority
+        ? {
+            label: this.$t(
+              `pages.tasks.inputs.options.priorities.${configurations.value.defaultPriority}`
+            ),
+            value: priorityWeights[configurations.value.defaultPriority],
+          }
+        : {
+            label: this.$t("pages.tasks.inputs.options.priorities.normal"),
+            value: 2,
+          },
+      categories: [],
+      date: ref(today2),
+    });
+
+    const loop = new Loop(() => {
       const date = storage.get("current_date");
       if (date) {
         let [year, month, day] = date.split("-");
         today.value = `${year}/${month}/${day}`;
         today2.value = `${day}/${month}/${year}`;
       }
-    }, 1000);
-    const newTask = ref({
-      title: "",
-      description: "",
-      priority: {
-        label: "Normal",
-        value: 2,
-      },
-      categories: [],
-      date: ref(today2),
+    });
+    loop.start();
+
+    onBeforeUnmount(() => {
+      loop.stop();
     });
 
     onMounted(() => {
@@ -185,7 +240,9 @@ export default {
       newTask.value.title = task.title;
       newTask.value.description = task.description;
       newTask.value.priority = {
-        label: task.priority.name,
+        label: this.$t(
+          `pages.tasks.inputs.options.priorities.${task.priority.name}`
+        ),
         value: task.priority.weight,
       };
       newTask.value.categories = task.categories;
@@ -209,26 +266,31 @@ export default {
         if (editing.value === false) {
           newTask.value.title = "";
           newTask.value.description = "";
-          newTask.value.priority = {
-            label: "Normal",
-            value: 2,
-          };
           newTask.value.categories = [];
         }
         showForm.value = val;
       }
     );
+    watch(
+      () => props._theme,
+      (val) => {
+        theme.value = val;
+      }
+    );
+    watch(
+      () => props._configurations,
+      (val) => {
+        configurations.value = val;
+      }
+    );
 
     return {
+      theme,
+      rules,
       editing,
       today2,
       showForm,
-      priorities: [
-        { label: "Low", value: 1 },
-        { label: "Normal", value: 2 },
-        { label: "High", value: 3 },
-        { label: "Urgent", value: 4 },
-      ],
+      priorities,
       categories,
       newTask,
       showCalendar: ref(false),
@@ -252,11 +314,12 @@ export default {
       this.showCalendar = false;
     },
     saveNewTask() {
-      if (!rules.title.exp.test(this.newTask.title)) {
+      if (!this.rules.title.exp.test(this.newTask.title)) {
         this.$q.notify({
-          message: rules.title.message,
+          message: this.rules.title.message,
           color: "red-5",
           position: "bottom-right",
+          timeout: 2000,
         });
         return;
       }
@@ -265,19 +328,21 @@ export default {
         this.newTask.description.length < 20
       ) {
         this.$q.notify({
-          message: rules.description.message,
+          message: this.rules.description.message,
           color: "red-5",
           position: "bottom-right",
+          timeout: 2000,
         });
         return;
       }
       const [day, month, year] = this.newTask.date.split("/");
       const date = `${year}-${month}-${day}`;
-      if (!rules.date.exp.test(date)) {
+      if (!this.rules.date.exp.test(date)) {
         this.$q.notify({
-          message: rules.date.message,
+          message: this.rules.date.message,
           color: "red-5",
           position: "bottom-right",
+          timeout: 2000,
         });
         return;
       }
@@ -293,36 +358,40 @@ export default {
         .then(({ status }) => {
           if (status === 201) {
             this.$q.notify({
-              message: "Task saved successfully",
+              message: this.$t("pages.tasks.messages.task_saved"),
               color: "green-5",
               position: "bottom-right",
+              timeout: 2000,
             });
             this.resetForm();
             EventBus.emit("task-added");
             this.$emit("update:show", false);
           } else {
             this.$q.notify({
-              message: "An error occurred while saving the task",
+              message: this.$t("pages.tasks.messages.error_saving_task"),
               color: "red-5",
               position: "bottom-right",
+              timeout: 2000,
             });
           }
         })
         .catch((error) => {
           console.log(error);
           this.$q.notify({
-            message: "An error occurred while saving the task",
+            message: this.$t("pages.tasks.messages.error_saving_task"),
             color: "red-5",
             position: "bottom-right",
+            timeout: 2000,
           });
         });
     },
     editTask() {
-      if (!rules.title.exp.test(this.newTask.title)) {
+      if (!this.rules.title.exp.test(this.newTask.title)) {
         this.$q.notify({
-          message: rules.title.message,
+          message: this.rules.title.message,
           color: "red-5",
           position: "bottom-right",
+          timeout: 2000,
         });
         return;
       }
@@ -331,19 +400,21 @@ export default {
         this.newTask.description.length < 20
       ) {
         this.$q.notify({
-          message: rules.description.message,
+          message: this.rules.description.message,
           color: "red-5",
           position: "bottom-right",
+          timeout: 2000,
         });
         return;
       }
       const [day, month, year] = this.newTask.date.split("/");
       const date = `${year}-${month}-${day}`;
-      if (!rules.date.exp.test(date)) {
+      if (!this.rules.date.exp.test(date)) {
         this.$q.notify({
-          message: rules.date.message,
+          message: this.rules.date.message,
           color: "red-5",
           position: "bottom-right",
+          timeout: 2000,
         });
         return;
       }
@@ -359,27 +430,30 @@ export default {
         .then(({ status }) => {
           if (status === 200) {
             this.$q.notify({
-              message: "Task edited successfully",
+              message: this.$t("pages.tasks.messages.task_updated"),
               color: "green-5",
               position: "bottom-right",
+              timeout: 2000,
             });
             this.resetForm();
             EventBus.emit("task-edited");
             this.$emit("update:show", false);
           } else {
             this.$q.notify({
-              message: "An error occurred while editing the task",
+              message: this.$t("pages.tasks.messages.error_updating_task"),
               color: "red-5",
               position: "bottom-right",
+              timeout: 2000,
             });
           }
         })
         .catch((error) => {
           console.log(error);
           this.$q.notify({
-            message: "An error occurred while editing the task",
+            message: this.$t("pages.tasks.messages.error_updating_task"),
             color: "red-5",
             position: "bottom-right",
+            timeout: 2000,
           });
         });
     },

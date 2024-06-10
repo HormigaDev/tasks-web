@@ -37,6 +37,10 @@ const routes = [
         path: "register",
         component: () => import("../pages/AuthRegisterPage.vue"),
       },
+      {
+        path: "dev-tools",
+        component: () => import("pages/OpenDevTools.vue"),
+      },
     ],
   },
 

@@ -13,9 +13,15 @@
         class="flex flex-center justify-center row"
         style="width: 100vw; height: 180px; border-radius: 50%"
       >
-        <q-img src="src/assets/icon.ico" style="width: 64px; height: 64px" />
+        <q-img
+          src="src/assets/bbel_full_logo.png"
+          style="width: 260px; height: 200px"
+          :ratio="16 / 9"
+        />
       </div>
-      <div class="text-h5 q-mb-md flex flex-center">Register to continue</div>
+      <div class="text-h5 q-mb-md flex flex-center">
+        {{ $t("pages.register.titles.register_to_continue") }}
+      </div>
       <q-form
         @submit="register"
         style="width: 70%; margin-left: 15%"
@@ -39,30 +45,41 @@
         <q-select
           v-model="user.phone_type"
           :options="phoneOptions"
-          label="Phone Type"
+          :label="$t('pages.register.inputs.labels.phone_type')"
           dark
-          class="q-mb-md"
+          style="width: 39%; margin-left: 1%"
           color="white"
-          style="display: inline-block; width: 60%"
         />
         <small style="width: 100%">
-          already have an account?
-          <router-link to="/auth/login">Login</router-link>
+          {{ $t("pages.register.messages.already_an_account") }}
+          <router-link to="/auth/login">{{
+            $t("pages.register.titles.login")
+          }}</router-link>
         </small>
         <q-btn
-          style="
-            background: #9c8449;
-            color: white;
-            width: 40%;
-            margin-left: 30%;
-          "
-          label="Register"
+          color="accent"
+          style="color: white; width: 40%; margin-left: 30%"
+          :label="$t('pages.register.buttons.register')"
           class="q-mb-md q-mt-sm"
           @click="register"
           :loading="loading"
           :percentage="0"
         />
       </q-form>
+    </div>
+    <div class="absolute-bottom-right">
+      <q-select
+        :label="$t('pages.login.inputs.labels.language')"
+        outlined
+        dense
+        v-model="lang"
+        :options="langOptions"
+        color="white"
+        dark
+        class="q-mb-sm q-mr-sm"
+        style="min-width: 140px"
+        @update:model-value="changeLang($event)"
+      />
     </div>
   </q-page>
 </template>
@@ -71,24 +88,24 @@ import { ref, defineComponent } from "vue";
 import register from "src/functions/register";
 import Cookies from "js-cookie";
 import { useRouter } from "vue-router";
+import { getConfig } from "src/functions/configs";
 
 export default defineComponent({
-  setup() {
+  data() {
+    this.$i18n.locale = localStorage.getItem("lang") || "en-US";
     const router = useRouter();
     if (Cookies.get("token")) router.push("/main/tasks");
     const errors = {
-      invalidUsername: "Invalid username",
-      invalidEmail: "Invalid email",
-      invalidPassword:
-        "Password must contain at least 1 uppercase, 1 lowercase, 1 number, 1 special character, and be between 8 and 64 characters long",
-      equalPasswords: "Passwords do not match",
-      invalidDDD: "Invalid DDD",
-      invalidPhone: "Invalid phone number",
-      invalidURL: "Invalid URL",
+      invalidUsername: this.$t("pages.register.messages.invalid_username"),
+      invalidEmail: this.$t("pages.register.messages.invalid_email"),
+      invalidPassword: this.$t("pages.register.messages.invalid_password"),
+      equalPasswords: this.$t("pages.register.messages.equal_passwords"),
+      invalidDDD: this.$t("pages.register.messages.invalid_ddd"),
+      invalidPhone: this.$t("pages.register.messages.invalid_phone"),
     };
     const inputs = [
       {
-        label: "Username",
+        label: this.$t("pages.register.inputs.labels.username"),
         type: "text",
         model: "username",
         icon: "person",
@@ -97,7 +114,7 @@ export default defineComponent({
         class: "49%",
       },
       {
-        label: "Email",
+        label: this.$t("pages.register.inputs.labels.email"),
         type: "email",
         model: "email",
         icon: "email",
@@ -107,7 +124,7 @@ export default defineComponent({
         margin: "2%",
       },
       {
-        label: "Password",
+        label: this.$t("pages.register.inputs.labels.password"),
         type: "password",
         model: "password",
         icon: "lock",
@@ -116,7 +133,7 @@ export default defineComponent({
         class: "49%",
       },
       {
-        label: "Confirm Password",
+        label: this.$t("pages.register.inputs.labels.confirm_password"),
         type: "password",
         model: "confirm_password",
         icon: "lock",
@@ -126,7 +143,7 @@ export default defineComponent({
         margin: "2%",
       },
       {
-        label: "DDD",
+        label: this.$t("pages.register.inputs.labels.phone_ddd"),
         type: "text",
         model: "phone_ddd",
         icon: "phone",
@@ -135,7 +152,7 @@ export default defineComponent({
         class: "10%",
       },
       {
-        label: "Phone",
+        label: this.$t("pages.register.inputs.labels.phone_number"),
         type: "text",
         model: "phone_number",
         icon: "phone",
@@ -143,16 +160,6 @@ export default defineComponent({
         "error-message": errors.invalidPhone,
         class: "49%",
         margin: "1%",
-      },
-      {
-        label: "Avatar URL",
-        type: "text",
-        model: "avatar_url",
-        icon: "image",
-        error: "avatar_url",
-        "error-message": errors.invalidURL,
-        class: "38%",
-        margin: "2%",
       },
     ];
     const user = ref({
@@ -162,9 +169,8 @@ export default defineComponent({
       confirm_password: "",
       phone_ddd: "",
       phone_number: "",
-      avatar_url: "",
       phone_type: {
-        label: "Cellphone",
+        label: this.$t("pages.register.inputs.options.phone_types.cellphone"),
         value: "cellphone",
       },
     });
@@ -176,17 +182,27 @@ export default defineComponent({
         confirm_password: true,
         phone_ddd: true,
         phone_number: true,
-        avatar_url: true,
       }),
       user,
       inputs,
       error: ref(""),
       loading: ref(false),
       phoneOptions: [
-        { label: "Cellphone", value: "cellphone" },
-        { label: "Home", value: "home" },
-        { label: "Work", value: "work" },
+        {
+          label: this.$t("pages.register.inputs.options.phone_types.cellphone"),
+          value: "cellphone",
+        },
+        {
+          label: this.$t("pages.register.inputs.options.phone_types.home"),
+          value: "home",
+        },
+        {
+          label: this.$t("pages.register.inputs.options.phone_types.work"),
+          value: "work",
+        },
       ],
+      lang: ref(localStorage.getItem("lang") || "en-US"),
+      langOptions: ["en-US", "es-ES", "pt-BR"],
     };
   },
   methods: {
@@ -200,8 +216,6 @@ export default defineComponent({
           /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,64}$/,
         phone_ddd: /^[0-9]{2}$/,
         phone_number: /^[0-9]{8,9}$/,
-        avatar_url:
-          /^(https?|ftp):\/\/[^\s/$.?#-][^\s]*\.(png|jpg|jpeg|avif|webp)$/i,
       };
       for (const key in expressions) {
         if (!expressions[key].test(this.user[key])) {
@@ -222,29 +236,35 @@ export default defineComponent({
         this.user.password,
         this.user.phone_ddd,
         this.user.phone_number,
-        this.user.phone_type.value,
-        this.user.avatar_url
+        this.user.phone_type.value
       )
         .then(({ status, res }) => {
           if (status === 409) {
-            this.error = "User already exists";
+            this.error = this.$t("pages.register.messages.user_already_exists");
             this.loading = false;
             return;
           }
           if (!res) {
-            this.error = "Invalid data";
+            this.error = this.$t("pages.register.messages.invalid_data");
             this.loading = false;
             return;
           }
           console.log("Register success", res);
           this.loading = false;
-          this.$router.push("/auth/login");
+          getConfig("language").then((lang) => {
+            this.$i18n.locale = lang;
+            this.$router.push("/main/tasks");
+          });
         })
         .catch((err) => {
           console.log("Register error", err);
           this.loading = false;
           this.error = err.message;
         });
+    },
+    changeLang(lang) {
+      localStorage.setItem("lang", lang);
+      this.$i18n.locale = lang;
     },
   },
 });

@@ -1,7 +1,7 @@
 <template>
-  <q-dialog persistent v-model="show" dark>
+  <q-dialog persistent v-model="show" :dark="theme === 'dark'">
     <q-card
-      dark
+      :dark="theme === 'dark'"
       style="min-width: 80%; position: relative; height: 100%; max-height: 80vh"
       class="q-mt-xl"
     >
@@ -11,7 +11,7 @@
         dense
         icon="close"
         class="absolute-top-right q-mr-xs q-mt-xs"
-        color="white"
+        :color="theme === 'dark' ? 'white' : 'dark'"
         style="z-index: 99"
         @click="() => $emit('update:show', false)"
       />
@@ -40,7 +40,7 @@
             icon="edit"
             size="sm"
             class="q-ml-md q-pr-sm q-pl-xs"
-            label="Edit Affair"
+            :label="$t('pages.affairs.buttons.edit_affair')"
             v-if="editing"
             @click="editAffair(affair.id)"
           />
@@ -48,7 +48,11 @@
       </q-card-section>
       <q-card-section style="max-height: 60vh; height: 100%">
         <div
-          class="q-px-lg q-py-md"
+          :class="{
+            'q-px-lg': true,
+            'q-py-md': true,
+            't-light': theme !== 'dark',
+          }"
           style="max-height: 60vh; height: 100%; overflow: auto"
         >
           <q-timeline color="secondary">
@@ -58,7 +62,7 @@
               :title="timeline.title"
               :subtitle="formatDate(timeline.createdAt)"
               color="grey-7"
-              :icon="editing ? 'edit' : ''"
+              :icon="editing ? 'edit' : 'schedule'"
             >
               <template v-slot:subtitle>
                 <div>
@@ -104,9 +108,11 @@ export default {
   props: {
     showProp: Boolean,
     affairProp: Object,
+    _theme: String,
   },
   emits: ["update:show", "update:newtimeline", "update:editaffair"],
-  setup(props) {
+  data(props) {
+    const theme = ref(props._theme);
     const affair = ref(props.affairProp);
     const $q = useQuasar();
     const actualizeTimelines = () => {
@@ -136,6 +142,13 @@ export default {
       }
     );
 
+    watch(
+      () => props._theme,
+      (value) => {
+        theme.value = value;
+      }
+    );
+
     EventBus.on("timeline-created", () => {
       actualizeTimelines();
     });
@@ -144,6 +157,7 @@ export default {
     });
 
     return {
+      theme,
       actualizeTimelines,
       show: ref(props.showProp),
       affair,
@@ -151,12 +165,19 @@ export default {
       formatDate,
       confirmDelete: (confirm, id) => {
         $q.dialog({
-          title: "Confirm",
-          message: "Would you like to delete this affair?",
-          cancel: true,
+          title: this.$t("pages.affairs.titles.confirm_deletion"),
+          message: this.$t("pages.affairs.messages.confirm_delete_timeline"),
+          cancel: {
+            label: this.$t("pages.affairs.buttons.cancel"),
+            color: "grey-8",
+          },
           persistent: true,
           color: "red-5",
-          dark: true,
+          dark: theme.value === "dark",
+          ok: {
+            label: this.$t("pages.affairs.buttons.delete"),
+            color: "red-5",
+          },
         })
           .onOk(() => {
             confirm(id);
@@ -220,9 +241,10 @@ export default {
       deleteTimeline(storage.get("current_affair"), id).then(({ status }) => {
         if (status === 200) {
           this.$q.notify({
-            message: "Timeline deleted",
+            message: this.$t("pages.affairs.messages.timeline_deleted"),
             color: "green-5",
             position: "bottom-right",
+            timeout: 2000,
           });
           this.actualizeTimelines();
         }

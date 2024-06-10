@@ -4,7 +4,7 @@
       <div class="flex row flex-center">
         <q-btn
           dense
-          dark
+          :dark="theme === 'dark'"
           color="grey-8"
           icon="add"
           class="q-ml-md q-mb-sm"
@@ -12,7 +12,7 @@
         />
         <q-btn
           dense
-          dark
+          :dark="theme === 'dark'"
           color="grey-8"
           icon="category"
           class="q-ml-md q-mb-sm"
@@ -22,30 +22,30 @@
           <q-select
             v-for="(option, key) in filterBarOptions"
             outlined
-            dark
+            :dark="theme === 'dark'"
             :key="key"
             v-model="filters[option.value]"
             :options="option.options"
             :label="option.label"
             class="t-select q-ml-md v-tasks q-mb-sm"
-            color="white"
+            :color="theme === 'dark' ? 'white' : 'dark'"
             dense
             @update:model-value="filterTasks"
-            label-color="grey-7"
+            :label-color="theme === 'dark' ? 'grey-7' : 'grey-9'"
             :style="'width: ' + key == 1 ? 170 : 70 + 'px'"
           />
         </div>
         <q-input
           dense
-          dark
+          :dark="theme === 'dark'"
           outlined
-          color="white"
+          :color="theme === 'dark' ? 'white' : 'dark'"
           debounce="200"
           v-model="filters.search"
-          placeholder="Search Task"
+          :placeholder="$t('pages.tasks.inputs.labels.search_task')"
           class="q-mr-md q-mb-sm"
           @update:model-value="filterTasks"
-          label-color="grey-7"
+          :label-color="theme === 'dark' ? 'grey-7' : 'grey-9'"
         >
           <template v-slot:append>
             <q-icon name="search" />
@@ -55,27 +55,48 @@
     </div>
     <div class="q-mt-md">
       <q-toggle
-        dark
-        color="grey-7"
+        :dark="theme === 'dark'"
+        :color="theme === 'dark' ? 'grey-7' : 'grey-9'"
         v-model="filters.showArchives"
-        label="Show Archived Tasks"
+        :label="$t('pages.tasks.inputs.labels.show_archiveds')"
         dense
+        :class="{ 'text-dark': theme !== 'dark' }"
         @update:model-value="filterTasks"
       />
       <q-toggle
-        dark
-        color="grey-7"
+        :dark="theme === 'dark'"
+        :color="theme === 'dark' ? 'grey-7' : 'grey-9'"
         v-model="filters.showEndeds"
-        label="Show Finalized Tasks"
+        :label="$t('pages.tasks.inputs.labels.show_finalizeds')"
         dense
-        class="q-ml-xl"
+        :class="{ 'q-ml-xl': true, 'text-dark': theme !== 'dark' }"
         @update:model-value="filterTasks"
       />
     </div>
     <div
-      style="height: 58vh; overflow: auto"
-      class="tasks-grid q-pl-md q-pr-md"
+      style="height: 58vh; overflow: auto; position: relative"
+      :class="{
+        'tasks-grid': true,
+        'q-pl-md': true,
+        'q-pr-md': true,
+        't-light': theme !== 'dark',
+      }"
     >
+      <div
+        v-if="rows.length === 0"
+        class="absolute-top-left flex flex-center"
+        style="width: 100%; height: 100%"
+      >
+        <div
+          :class="{
+            'text-h4': true,
+            'text-grey-7': theme === 'dark',
+            'text-grey-6': theme !== 'dark',
+          }"
+        >
+          {{ $t("pages.tasks.titles.nothing_to_show") }}
+        </div>
+      </div>
       <div
         v-for="task in rows"
         :key="task.id"
@@ -88,8 +109,18 @@
           'task-archived': task.status === 'archived',
         }"
       >
-        <q-card dark class="bg-grey-10" style="height: 100%; width: 100%">
-          <q-card-section class="bg-grey-8 row">
+        <q-card
+          :dark="theme === 'dark'"
+          :class="theme === 'dark' ? 'bg-grey-10' : 'bg-grey-5'"
+          style="height: 100%; width: 100%"
+        >
+          <q-card-section
+            :class="{
+              'bg-grey-8': theme === 'dark',
+              'bg-grey-6': theme !== 'dark',
+              row: true,
+            }"
+          >
             <q-item-label style="font-size: 13px">
               {{
                 task.title.length > 40
@@ -100,7 +131,7 @@
             <q-btn
               v-if="task.fixed && task.status !== 'ended'"
               flat
-              color="grey-5"
+              :color="theme === 'dark' ? 'grey-5' : 'grey-8'"
               dense
               rounded
               class="absolute-top-right q-mt-sm"
@@ -127,61 +158,61 @@
               flat
               dense
               rounded
-              color="grey-5"
+              :color="theme === 'dark' ? 'grey-5' : 'grey-8'"
               dropdown-icon="more_vert"
             >
               <q-list>
                 <q-item
                   clickable
                   v-ripple
-                  dark
+                  :dark="theme === 'dark'"
                   @click="showTask(task)"
-                  class="bg-grey-9"
+                  :class="theme === 'dark' ? 'bg-grey-9' : 'bg-grey-6'"
                   v-close-popup
                 >
                   <q-item-section>
                     <q-item-label
                       ><q-icon
                         name="visibility"
-                        color="grey-5"
+                        :color="theme === 'dark' ? 'grey-5' : 'grey-9'"
                         class="q-mr-md"
                         size="sm"
-                      />View</q-item-label
+                      />{{ $t("pages.tasks.titles.view_task") }}</q-item-label
                     >
                   </q-item-section>
                 </q-item>
                 <q-item
-                  dark
+                  :dark="theme === 'dark'"
                   clickable
                   v-ripple
                   @click="archiveTask(task.id)"
-                  class="bg-grey-9"
+                  :class="theme === 'dark' ? 'bg-grey-9' : 'bg-grey-6'"
                   v-close-popup
                 >
                   <q-item-section>
                     <q-item-label>
                       <q-icon
                         name="archive"
-                        color="grey-5"
+                        :color="theme === 'dark' ? 'grey-5' : 'grey-9'"
                         class="q-mr-md"
                         size="sm"
-                      />Archive</q-item-label
+                      />{{ $t("pages.tasks.titles.archive") }}</q-item-label
                     >
                   </q-item-section>
                 </q-item>
                 <q-item
-                  dark
+                  :dark="theme === 'dark'"
                   clickable
                   v-ripple
                   @click="assingTask(task.id, !task.fixed)"
-                  class="bg-grey-9"
+                  :class="theme === 'dark' ? 'bg-grey-9' : 'bg-grey-6'"
                   v-close-popup
                 >
                   <q-item-section>
                     <q-item-label
                       ><q-icon
                         name="keep_on"
-                        color="grey-5"
+                        :color="theme === 'dark' ? 'grey-5' : 'grey-9'"
                         class="q-mr-md"
                         size="sm"
                         ><i
@@ -189,17 +220,19 @@
                           style="transform: rotate(45deg)"
                         ></i></q-icon
                       >{{
-                        !task.fixed ? "Assing Task" : "UnAssing Task"
+                        !task.fixed
+                          ? $t("pages.tasks.titles.assign_task")
+                          : $t("pages.tasks.titles.unassign_task")
                       }}</q-item-label
                     >
                   </q-item-section>
                 </q-item>
                 <q-item
-                  dark
+                  :dark="theme === 'dark'"
                   clickable
                   v-ripple
                   @click="deleteTask(task.id)"
-                  class="bg-grey-9"
+                  :class="theme === 'dark' ? 'bg-grey-9' : 'bg-grey-6'"
                   v-close-popup
                 >
                   <q-item-section>
@@ -209,16 +242,18 @@
                         color="red-5"
                         class="q-mr-md"
                         size="sm"
-                      />Delete</q-item-label
+                      />{{ $t("pages.tasks.titles.delete") }}</q-item-label
                     >
                   </q-item-section>
                 </q-item>
               </q-list>
             </q-btn-dropdown>
           </q-card-section>
-          <q-separator dark />
+          <q-separator :dark="theme === 'dark'" />
           <q-card-section class="flex row">
-            <div class="q-mr-sm">Categories:</div>
+            <div :class="{ 'q-mr-sm': true, 'text-dark': theme !== 'dark' }">
+              {{ $t("pages.tasks.titles.categories") }}:
+            </div>
             <q-badge
               v-for="category in task.categories.slice(0, 3)"
               :key="category.id"
@@ -232,7 +267,15 @@
           </q-card-section>
           <q-card-section>
             <q-item-label class="row">
-              <div class="q-mr-sm text-white">Priority:</div>
+              <div
+                :class="{
+                  'q-mr-sm': true,
+                  'text-white': theme === 'dark',
+                  'text-dark': theme !== 'dark',
+                }"
+              >
+                {{ $t("pages.tasks.titles.priority") }}:
+              </div>
               <div
                 :class="{
                   'text-grey-7':
@@ -246,20 +289,28 @@
               >
                 {{
                   task.priority.weight > 3 && task.status !== "ended"
-                    ? ` This task is ${priorities[task.priority.name].name}!!`
+                    ? $t("pages.tasks.messages.urgent_task")
                     : " " + priorities[task.priority.name].name
                 }}
-                {{ task.status === "ended" ? " (Finalized)" : "" }}
+                {{
+                  task.status === "ended"
+                    ? ` (${$t("pages.tasks.titles.finalized")})`
+                    : ""
+                }}
               </div></q-item-label
             >
           </q-card-section>
-          <q-separator dark />
+          <q-separator :dark="theme === 'dark'" />
           <q-card-section>
-            <q-item-label style="user-select: text">{{
-              task.description.length > 240
-                ? task.description.substring(0, 240) + "..."
-                : task.description
-            }}</q-item-label>
+            <q-item-label
+              style="user-select: text"
+              :class="{ 'text-dark': theme !== 'dark' }"
+              >{{
+                task.description.length > 240
+                  ? task.description.substring(0, 240) + "..."
+                  : task.description
+              }}</q-item-label
+            >
           </q-card-section>
           <q-card-section
             :class="{
@@ -269,7 +320,9 @@
             }"
             style="margin-bottom: -12px"
           >
-            <q-item-label> Scheduled for: </q-item-label>
+            <q-item-label>
+              {{ $t("pages.tasks.titles.scheduled_for") }}
+            </q-item-label>
             <q-item-label class="flex row flex-center"
               ><q-icon name="calendar_today" class="q-mr-sm q-mb-xs" />{{
                 task.isoDate
@@ -277,10 +330,16 @@
             >
           </q-card-section>
           <q-card-section
-            class="absolute-bottom-left text-grey-7"
+            :class="{
+              'absolute-bottom-left': true,
+              'text-grey-7': theme === 'dark',
+              'text-dark': theme !== 'dark',
+            }"
             style="margin-bottom: -12px"
           >
-            <q-item-label> Created at: </q-item-label>
+            <q-item-label>
+              {{ $t("pages.tasks.titles.created_at") }}
+            </q-item-label>
             <q-item-label class="flex row flex-center"
               ><q-icon name="calendar_today" class="q-mr-sm q-mb-xs" />{{
                 task.isoCreatedAt
@@ -297,18 +356,22 @@
         v-model="filters.page"
         :max="Math.ceil(totalTasks / filters.limit)"
         color="grey-8"
-        dark
-        class="q-mt-md text-dark"
+        :dark="theme === 'dark'"
+        :class="{
+          'q-mt-md': true,
+          'text-dark': theme === 'dark',
+          'text-white': theme !== 'dark',
+        }"
         v-if="totalTasks > filters.limit && rows.length > 0"
         @click="filterTasks"
       />
       <q-select
         v-model="filters.limit"
         :options="rowsPerPageOptions"
-        dark
+        :dark="theme === 'dark'"
         style="min-width: 100px"
         dense
-        color="white"
+        :color="theme === 'dark' ? 'white' : 'dark'"
         class="q-ml-xl q-mt-md"
         label-color="grey-7"
       />
@@ -317,43 +380,55 @@
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 import { getTasks, editTask, deleteTask } from "src/functions/task";
 import columns from "src/data/tasksPage/columns.json";
 import { useQuasar } from "quasar";
 import EventBus from "src/functions/EventBus";
 import { getCategories } from "src/functions/categories";
-
-const priorities = {
-  urgent: {
-    color: "#f22",
-    name: "Urgent",
-    icon: "error",
-  },
-  high: {
-    color: "#ff6",
-    name: "High",
-    icon: "warning",
-  },
-  normal: {
-    color: "#66f",
-    name: "Normal",
-  },
-  low: {
-    color: "#6f6",
-    name: "Low",
-  },
-};
+import storage from "src/functions/virtualStorage";
+import { Loop } from "src/functions/utils";
 
 export default {
   name: "QuasarTableComponent",
-  setup() {
+  data() {
+    const theme = ref(storage.get("theme"));
+
+    const priorities = {
+      urgent: {
+        color: "#f22",
+        name: this.$t("pages.tasks.inputs.options.priorities.urgent"),
+        icon: "error",
+      },
+      high: {
+        color: "#ff6",
+        name: this.$t("pages.tasks.inputs.options.priorities.high"),
+        icon: "warning",
+      },
+      normal: {
+        color: "#66f",
+        name: this.$t("pages.tasks.inputs.options.priorities.normal"),
+      },
+      low: {
+        color: "#6f6",
+        name: this.$t("pages.tasks.inputs.options.priorities.low"),
+      },
+    };
     const rows = ref([]);
     const categories = ref([]);
     const filters = ref({
-      priority: { label: "All", value: 0 },
-      order_by: { label: "Date of execution", value: "run_date" },
-      asc_desc: { label: "Asc", value: "asc" },
+      priority: {
+        label: this.$t("pages.tasks.inputs.options.priorities.all"),
+        value: 0,
+      },
+      order_by: {
+        label: this.$t("pages.tasks.inputs.options.orders_by.run_date"),
+        value: "run_date",
+      },
+      asc_desc: {
+        label: this.$t("pages.tasks.inputs.options.orders.asc"),
+        value: "asc",
+      },
       page: 1,
       categories: [],
       limit: 10,
@@ -402,9 +477,17 @@ export default {
         }
       });
     };
-    setInterval(() => {
+
+    const loop = new Loop(() => {
+      theme.value = storage.get("theme");
       actualizeTasks();
-    }, 1000);
+    });
+    loop.start();
+
+    //!! dimounting component
+    onBeforeUnmount(() => {
+      loop.stop();
+    });
 
     EventBus.on("task-added", () => {
       getTasks(
@@ -422,7 +505,6 @@ export default {
       });
     });
     EventBus.on("show-fixed-tasks", () => {
-      console.log("Fixed tasks");
       filters.value.fixed = !filters.value.fixed;
       actualizeTasks();
     });
@@ -437,6 +519,7 @@ export default {
     const $q = useQuasar();
 
     return {
+      theme,
       pagination: ref(1),
       filter: ref(""),
       selected: ref([]),
@@ -447,44 +530,67 @@ export default {
       priorities,
       filterBarOptions: [
         {
-          label: "Priority",
+          label: this.$t("pages.tasks.inputs.labels.priority"),
           value: "priority",
           options: [
-            { label: "All", value: 0 },
-            { label: "Urgent", value: 4 },
-            { label: "High", value: 3 },
-            { label: "Normal", value: 2 },
-            { label: "Low", value: 1 },
+            {
+              label: this.$t("pages.tasks.inputs.options.priorities.all"),
+              value: 0,
+            },
+            {
+              label: this.$t("pages.tasks.inputs.options.priorities.urgent"),
+              value: 4,
+            },
+            {
+              label: this.$t("pages.tasks.inputs.options.priorities.high"),
+              value: 3,
+            },
+            {
+              label: this.$t("pages.tasks.inputs.options.priorities.normal"),
+              value: 2,
+            },
+            {
+              label: this.$t("pages.tasks.inputs.options.priorities.low"),
+              value: 1,
+            },
           ],
         },
         {
-          label: "Order By",
+          label: this.$t("pages.tasks.inputs.labels.order_by"),
           value: "order_by",
           options: [
             {
-              label: "Date of execution",
+              label: this.$t("pages.tasks.inputs.options.orders_by.run_date"),
               value: "run_date",
             },
             {
-              label: "Date of creation",
+              label: this.$t("pages.tasks.inputs.options.orders_by.created_at"),
               value: "created_at",
             },
             {
-              label: "Title",
+              label: this.$t("pages.tasks.inputs.options.orders_by.title"),
               value: "title",
             },
             {
-              label: "Description",
+              label: this.$t(
+                "pages.tasks.inputs.options.orders_by.description"
+              ),
               value: "description",
             },
           ],
         },
         {
-          label: "Order",
+          label: this.$t("pages.tasks.inputs.labels.order"),
           value: "asc_desc",
           options: [
-            { label: "Asc", value: "asc" },
-            { label: "Desc", value: "desc" },
+            {
+              label: this.$t("pages.tasks.inputs.options.orders.asc"),
+              value: "asc",
+            },
+            {
+              label: this.$t("pages.tasks.inputs.options.orders.desc"),
+              value: "desc",
+            },
           ],
         },
       ],
@@ -495,12 +601,18 @@ export default {
       rowsPerPageOptions: [10, 20, 30, 50, 100],
       confirmDelete: (confirm, id) => {
         $q.dialog({
-          title: "Confirm",
-          message: "Would you like to delete the selected tasks?",
-          cancel: true,
+          title: this.$t("pages.tasks.titles.confirm_deletion"),
+          message: this.$t("pages.tasks.messages.confirm_delete"),
+          cancel: {
+            label: this.$t("pages.tasks.buttons.cancel"),
+            color: "grey-8",
+          },
           persistent: true,
           color: "red-5",
-          dark: true,
+          dark: theme.value === "dark",
+          ok: {
+            label: this.$t("pages.tasks.buttons.delete"),
+          },
         })
           .onOk(() => {
             confirm(id);
@@ -528,18 +640,20 @@ export default {
         .then(({ status }) => {
           if (status === 200) {
             this.$q.notify({
-              message: "Task deleted",
+              message: this.$t("pages.tasks.messages.task_deleted"),
               color: "green-5",
               position: "bottom-right",
+              timeout: 2000,
             });
           }
         })
         .catch((error) => {
           console.log(error);
           this.$q.notify({
-            message: "Error deleting task",
+            message: this.$t("pages.tasks.messages.error_deleting_task"),
             color: "red-5",
             position: "bottom-right",
+            timeout: 2000,
           });
         });
     },
@@ -548,17 +662,12 @@ export default {
         editTask(id, { status: "archived" }).then(({ data, status }) => {
           if (status === 200) {
             this.$q.notify({
-              message: "Task archived",
+              message: this.$t("pages.tasks.messages.task_archived"),
               color: "green-5",
               position: "bottom-right",
+              timeout: 2000,
             });
           }
-        });
-      } else {
-        this.$q.notify({
-          message: "Select a task to archive",
-          color: "red-5",
-          position: "bottom-right",
         });
       }
     },
@@ -573,9 +682,12 @@ export default {
         .then(({ status }) => {
           if (status === 200) {
             this.$q.notify({
-              message: on_off ? "Task assigned" : "Task unassigned",
+              message: on_off
+                ? this.$t("pages.tasks.messages.task_assigned")
+                : this.$t("pages.tasks.messages.task_unassigned"),
               color: "green-5",
               position: "bottom-right",
+              timeout: 2000,
             });
           }
         })

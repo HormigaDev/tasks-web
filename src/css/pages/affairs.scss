@@ -1,17 +1,32 @@
 .t-affairs-table {
   background-color: $bg-lvl-8;
 }
+.t-affairs-table.t-light {
+  background-color: $t-light-bg-lvl-8 !important;
+}
 .t-affair-archived {
   background-color: $bg-lvl-8;
+}
+.t-affair-archived.t-light {
+  background-color: $t-light-bg-lvl-8 !important;
 }
 .q-table__top {
   background-color: $bg-lvl-5 !important;
 }
+.q-table__top.t-light {
+  background-color: $t-light-bg-lvl-5 !important;
+}
 .t-affairs-table th {
   background-color: $bg-lvl-6 !important;
 }
+.t-affairs-table th.t-light {
+  background-color: $t-light-bg-lvl-6 !important;
+}
 .t-affairs-table .q-table__bottom {
   background-color: $bg-lvl-5 !important;
+}
+.t-affairs-table.t-light .q-table__bottom {
+  background-color: $t-light-bg-lvl-5 !important;
 }
 .t-affairs-content {
   background-color: $bg-lvl-4;
@@ -21,6 +36,9 @@
   padding: 24px;
   padding-bottom: 0;
 }
+.t-affairs-content.t-light {
+  background-color: $t-light-bg-lvl-5 !important;
+}
 .t-affair-card {
   background-color: $bg-lvl-5;
   border-radius: 4px;
@@ -28,6 +46,9 @@
   min-height: 100px;
   max-height: 100px;
   transition: all 0.3s;
+}
+.t-affair-card.t-light {
+  background-color: $t-light-bg-lvl-5 !important;
 }
 .t-affair-card:hover {
   box-shadow: 0 0 3px #fafafa;

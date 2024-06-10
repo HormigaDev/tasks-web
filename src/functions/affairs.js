@@ -57,7 +57,7 @@ export async function newAffairTimeline(affair_id, title, description) {
 }
 
 export async function editAffair({ affair_id, title, person_name, status }) {
-  const { data, _status } = await API.put("/edit-affair", {
+  const { data, status: _status } = await API.put("/edit-affair", {
     affair_id,
     title,
     person_name,

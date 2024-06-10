@@ -4,16 +4,16 @@
       <div class="flex row t-table-header q-mt-sm">
         <q-toggle
           dense
-          dark
+          :dark="theme === 'dark'"
           color="grey-8"
           class="q-ml-md"
-          label="Show archiveds"
+          :label="$t('pages.affairs.inputs.labels.show_archiveds')"
           v-model="filters.showArchiveds"
           @update:model-value="showArchiveds"
         />
         <q-btn
           dense
-          dark
+          :dark="theme === 'dark'"
           color="grey-8"
           icon="add"
           class="q-ml-md"
@@ -23,36 +23,36 @@
       <div class="flex row q-mt-sm">
         <q-select
           dense
-          dark
+          :dark="theme === 'dark'"
           outlined
-          color="white"
+          :color="theme === 'dark' ? 'white' : 'dark'"
           :options="orderByOptions"
           v-model="filters.order_by"
-          label="Order By"
+          :label="$t('pages.affairs.inputs.labels.order_by')"
           class="q-ml-md"
           @update:model-value="filterAffairs"
           style="min-width: 140px"
         />
         <q-select
           dense
-          dark
+          :dark="theme === 'dark'"
           outlined
-          color="white"
+          :color="theme === 'dark' ? 'white' : 'dark'"
           v-model="filters.asc_desc"
           :options="ascDescOptions"
-          label="Order"
+          :label="$t('pages.affairs.inputs.labels.order')"
           class="q-ml-md"
           @update:model-value="filterAffairs"
           style="min-width: 100px"
         />
         <q-input
           dense
-          dark
+          :dark="theme === 'dark'"
           outlined
-          color="white"
+          :color="theme === 'dark' ? 'white' : 'dark'"
           debounce="200"
           v-model="filters.search"
-          placeholder="Search Affair"
+          :placeholder="$t('pages.affairs.inputs.labels.search_affair')"
           class="q-ml-md"
           @update:model-value="filterAffairs"
         >
@@ -62,26 +62,79 @@
         </q-input>
       </div>
     </div>
-    <div class="t-affairs-content row">
+    <div
+      :class="{
+        't-light': theme !== 'dark',
+        't-affairs-content': true,
+        row: true,
+      }"
+      style="position: relative"
+    >
+      <div
+        v-if="affairs.length === 0"
+        class="absolute-top-left flex flex-center"
+        style="width: 100%; height: 100%"
+      >
+        <div
+          :class="{
+            'text-h4': true,
+            'text-grey-7': theme === 'dark',
+            'text-grey-6': theme !== 'dark',
+          }"
+        >
+          {{ $t("pages.affairs.titles.nothing_to_show") }}
+        </div>
+      </div>
       <div
         v-for="affair in affairs"
         :key="affair.id"
-        class="col-12 column q-mb-md t-affair-card"
+        :class="{
+          'col-12': true,
+          column: true,
+          'q-mb-md': true,
+          't-affair-card': true,
+          't-light': theme !== 'dark',
+        }"
       >
-        <q-card vertical dark class="row q-pa-md" style="height: 100%" flat>
+        <q-card
+          vertical
+          :dark="theme === 'dark'"
+          class="row q-pa-md"
+          style="height: 100%"
+          flat
+        >
           <q-card-section
-            class="col-4 bg-grey-9 flex flex-center cursor-pointer"
+            :class="{
+              'col-4': true,
+              'bg-grey-9': theme === 'dark',
+              'bg-grey-4': theme !== 'dark',
+              flex: true,
+              'flex-center': true,
+              'cursor-pointer': true,
+            }"
             @click="showAffair(affair)"
           >
             <div class="text-h6">{{ affair.title }}</div>
           </q-card-section>
           <q-card-section class="col-2 flex flex-center">
-            <div class="text-center">{{ affair.personName }}</div>
+            <div
+              :class="{ 'text-center': true, 'text-bold': theme !== 'dark' }"
+            >
+              {{ affair.personName }}
+            </div>
           </q-card-section>
           <q-card-section
-            class="col-2 text-grey-7 text-right justify-center flex column"
+            :class="{
+              'col-2': true,
+              'text-grey-7': theme === 'dark',
+              'text-grey-9': theme !== 'dark',
+              'text-right': true,
+              'justify-center': true,
+              flex: true,
+              column: true,
+            }"
           >
-            <div>Created At:</div>
+            <div>{{ $t("pages.affairs.titles.created_at") }}</div>
             <div class="text-left flex justify-end" style="font-size: 13px">
               <q-icon name="calendar_today" class="q-mr-xs" size="xs" />{{
                 formatDate(affair.createdAt)
@@ -91,7 +144,7 @@
           <q-card-section
             class="col-2 text-brown text-right justify-center flex column"
           >
-            <div>Last update:</div>
+            <div>{{ $t("pages.affairs.titles.last_update") }}</div>
             <div class="text-left flex justify-end" style="font-size: 13px">
               <q-icon name="calendar_today" class="q-mr-xs" size="xs" />{{
                 formatDate(affair.lastUpdate)
@@ -101,24 +154,24 @@
           <q-card-section class="col-2">
             <q-btn
               dense
-              dark
+              :dark="theme === 'dark'"
               color="grey-8"
-              icon="archive"
+              :icon="affair.status === 'archived' ? 'unarchive' : 'archive'"
               class="q-mr-xs"
-              @click="archiveAffair(affair.id)"
+              @click="archiveAffair(affair.id, affair.status)"
             />
             <q-btn
               dense
-              dark
+              :dark="theme === 'dark'"
               color="red-5"
               icon="delete"
               class="q-ml-sm q-mr-xs"
               @click="confirmDeletion(affair.id)"
             />
             <q-chip
-              label="Archived"
-              color="grey-8"
-              text-color="white"
+              :label="$t('pages.affairs.inputs.labels.archived')"
+              :color="theme === 'dark' ? 'grey-8' : 'grey-5'"
+              text-:color="theme === 'dark'?'white':'dark'"
               size="sm"
               v-if="affair.status === 'archived'"
             />
@@ -132,7 +185,7 @@
         v-model="filters.page"
         :max="Math.ceil(totalAffairs / filters.limit)"
         color="grey-8"
-        dark
+        :dark="theme === 'dark'"
         class="q-mt-md text-dark"
         v-if="totalAffairs > filters.limit && affairs.length > 0"
         @click="filterAffairs(true)"
@@ -140,10 +193,10 @@
       <q-select
         v-model="filters.limit"
         :options="rowsPerPageOptions"
-        dark
+        :dark="theme === 'dark'"
         style="min-width: 100px"
         dense
-        color="white"
+        :color="theme === 'dark' ? 'white' : 'dark'"
         class="q-ml-xl q-mt-md"
         label-color="grey-7"
       />
@@ -152,17 +205,22 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { onBeforeUnmount, ref, watch } from "vue";
 import affairs from "src/data/affairs/affairs.json";
 import formatDate from "src/functions/formatDate.js";
 import { getAffairs, editAffair, deleteAffair } from "src/functions/affairs";
 import EventBus from "src/functions/EventBus";
 import storage from "src/functions/virtualStorage";
 import { useQuasar } from "quasar";
+import { Loop } from "src/functions/utils";
 
 export default {
   name: "AffairsTableComponent",
-  setup() {
+  props: {
+    _theme: String,
+  },
+  data(props) {
+    const theme = ref(props._theme);
     const $q = useQuasar();
     const affairs = ref([]);
     const totalAffairs = ref(0);
@@ -172,11 +230,11 @@ export default {
       search: "",
       showArchiveds: false,
       order_by: {
-        label: "Created At",
+        label: this.$t("pages.affairs.inputs.options.orders_by.created_at"),
         value: "created_at",
       },
       asc_desc: {
-        label: "Asc",
+        label: this.$t("pages.affairs.inputs.options.orders.asc"),
         value: "asc",
       },
     });
@@ -196,11 +254,15 @@ export default {
         }
       });
     };
-    actualizeAffairs();
 
-    setInterval(() => {
+    const loop = new Loop(() => {
       actualizeAffairs();
-    }, 10000);
+    });
+    loop.start();
+
+    onBeforeUnmount(() => {
+      loop.stop();
+    });
 
     EventBus.on("affair-created", () => {
       actualizeAffairs();
@@ -209,31 +271,64 @@ export default {
       actualizeAffairs();
     });
 
+    watch(
+      () => theme.value,
+      () => {
+        storage.set("theme", theme.value);
+      }
+    );
+
     return {
+      theme,
       actualizeAffairs,
       totalAffairs,
       filters,
       affairs,
       rowsPerPageOptions: [10, 20, 30, 50, 100],
       orderByOptions: [
-        { label: "Created At", value: "created_at" },
-        { label: "Last Update", value: "last_update" },
-        { label: "Person Name", value: "person_name" },
-        { label: "Title", value: "title" },
+        {
+          label: this.$t("pages.affairs.inputs.options.orders_by.created_at"),
+          value: "created_at",
+        },
+        {
+          label: this.$t("pages.affairs.inputs.options.orders_by.last_update"),
+          value: "last_update",
+        },
+        {
+          label: this.$t("pages.affairs.inputs.options.orders_by.person_name"),
+          value: "person_name",
+        },
+        {
+          label: this.$t("pages.affairs.inputs.options.orders_by.title"),
+          value: "title",
+        },
       ],
       ascDescOptions: [
-        { label: "Asc", value: "asc" },
-        { label: "Desc", value: "desc" },
+        {
+          label: this.$t("pages.affairs.inputs.options.orders.asc"),
+          value: "asc",
+        },
+        {
+          label: this.$t("pages.affairs.inputs.options.orders.desc"),
+          value: "desc",
+        },
       ],
       formatDate,
       confirmDelete: (confirm, id) => {
         $q.dialog({
-          title: "Confirm",
-          message: "Would you like to delete this affair?",
-          cancel: true,
+          title: this.$t("pages.affairs.titles.confirm_deletion"),
+          message: this.$t("pages.affairs.messages.confirm_delete"),
+          cancel: {
+            label: this.$t("pages.affairs.buttons.cancel"),
+            color: "grey-8",
+          },
           persistent: true,
           color: "red-5",
-          dark: true,
+          dark: theme.value === "dark",
+          ok: {
+            label: this.$t("pages.affairs.buttons.delete"),
+            color: "red-5",
+          },
         })
           .onOk(() => {
             confirm(id);
@@ -248,16 +343,25 @@ export default {
     newAffair() {
       this.$emit("update:newaffair", true);
     },
-    archiveAffair(id) {
-      editAffair({ affair_id: id, status: "archived" })
+    archiveAffair(id, _status) {
+      editAffair({
+        affair_id: id,
+        status: _status === "archived" ? "created" : "archived",
+      })
         .then(({ status }) => {
           if (status === 200) {
-            this.actualizeAffairs();
+            console.log("status", status);
             this.$q.notify({
-              message: "Affair archived",
-              color: "green-5",
+              message: this.$t(
+                `pages.affairs.messages.affair_${
+                  _status === "archived" ? "unarchived" : "archived"
+                }`
+              ),
+              color: this.theme === "dark" ? "green-5" : "green",
               position: "bottom-right",
+              timeout: 2000,
             });
+            this.actualizeAffairs();
           }
         })
         .catch((err) => {
@@ -265,6 +369,7 @@ export default {
         });
     },
     showArchiveds() {
+      this.filters.page = 1;
       this.actualizeAffairs();
     },
     confirmDeletion(id) {
@@ -276,18 +381,20 @@ export default {
           if (status === 200) {
             this.actualizeAffairs();
             this.$q.notify({
-              message: "Affair deleted",
-              color: "red-5",
+              message: this.$t("pages.affairs.messages.affair_deleted"),
+              color: this.theme === "dark" ? "red-5" : "red",
               position: "bottom-right",
+              timeout: 2000,
             });
           }
         })
         .catch((err) => {
           console.log(err);
           this.$q.notify({
-            message: "Error deleting affair",
-            color: "red-5",
+            message: this.$t("pages.affairs.messages.error_deleting_affair"),
+            color: this.theme === "dark" ? "red-5" : "red",
             position: "bottom-right",
+            timeout: 2000,
           });
         });
     },

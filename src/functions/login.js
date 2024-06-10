@@ -19,7 +19,7 @@ export default async function login(email_username, password) {
       sameSite: "strict",
     });
     delete data.token;
-    console.log(data.message);
+    console.log(data?.message);
     return { status, res: true };
   } else {
     console.log(data.message);

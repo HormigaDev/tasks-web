@@ -5,10 +5,13 @@
         :show="showForm"
         @update:show="showForm = $event"
         @update:save="saveTask"
+        :_theme="theme"
+        :_configurations="configurations"
       />
       <CategoriesComponent
         :show="showNewCategoryForm"
         @update:show="showNewCategoryForm = $event"
+        :_theme="theme"
       />
       <QuasarTableComponent
         @update:newtask="showNewTaskForm"
@@ -18,6 +21,7 @@
         @update:newcategory="showNewCategoryForm = $event"
       />
       <TaskComponent
+        :_theme="theme"
         :task="task"
         @update:show="showTask = false"
         @update:edittask="
@@ -42,15 +46,15 @@
 </template>
 
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, onBeforeUnmount } from "vue";
 import { useQuasar } from "quasar";
 import QuasarTableComponent from "src/components/QuasarTableComponent.vue";
 import NewTaskComponent from "src/components/NewTaskComponent.vue";
 import TaskComponent from "src/components/TaskComponent.vue";
 import CategoriesComponent from "src/components/CategoriesComponent.vue";
 import EventBus from "src/functions/EventBus";
-
-import rows from "src/data/tasksPage/rows.json";
+import storage from "src/functions/virtualStorage";
+import { Loop } from "src/functions/utils";
 
 export default defineComponent({
   name: "TasksPage",
@@ -59,11 +63,25 @@ export default defineComponent({
     $q.loading.hide();
   },
   setup() {
+    const theme = ref(storage.get("theme"));
+    const configurations = ref(storage.get("configurations"));
+    const loop = new Loop(() => {
+      theme.value = storage.get("theme");
+      configurations.value = storage.get("configurations");
+    });
+    loop.start();
+
+    onBeforeUnmount(() => {
+      loop.stop();
+    });
+
     const $q = useQuasar();
     const showForm = ref(false);
     const showTask = ref(false);
 
     return {
+      configurations,
+      theme,
       showForm,
       showTask,
       showMessage: (type, message) => {
@@ -106,7 +124,6 @@ export default defineComponent({
         });
       },
       task: ref({}),
-      tasks: ref(rows),
       showNewCategoryForm: ref(false),
     };
   },

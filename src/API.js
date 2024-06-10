@@ -41,9 +41,6 @@ class API {
   async post(route, body) {
     const response = await this.__body(route, "POST", body);
     if (response.status === 401) {
-      if ((await response.json().code) === "unauthorized") {
-        return await response.json();
-      }
       // return this.__redirect();
     }
     return { data: await response.json(), status: response.status };

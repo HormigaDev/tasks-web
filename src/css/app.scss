@@ -6,6 +6,10 @@ html,
 body {
   background: $bg-lvl-5;
 }
+html.t-light,
+body.t-light {
+  background: $t-light-bg-lvl-5 !important;
+}
 // impedir arrastrar las imagenes
 img {
   pointer-events: none;
@@ -21,21 +25,33 @@ a {
   background-color: $bg-lvl-10;
   border-radius: 8px;
 }
+*.t-light::-webkit-scrollbar-thumb {
+  background-color: $t-light-bg-lvl-10 !important;
+}
 *::-webkit-scrollbar {
   width: 6px;
 }
 *::-webkit-scrollbar-track {
   background-color: $bg-lvl-2;
 }
+*.t-light::-webkit-scrollbar-track {
+  background-color: $t-light-bg-lvl-2 !important;
+}
 
 .t-bg-banner {
   background-color: $bg-banner;
   color: $text-level-1;
 }
+.t-bg-banner.t-light {
+  background-color: $t-light-bg-banner !important;
+}
 .t-bg-drawer {
   background-color: $bg-drawer;
   color: $text-level-1;
   overflow-x: hidden !important;
+}
+.t-bg-drawer.t-light {
+  background-color: $t-light-bg-drawer !important;
 }
 .t-icon {
   font-size: 24px;
@@ -50,6 +66,10 @@ a {
   background-color: $bg-lvl-5;
   color: $text-level-2;
 }
+.t-page-container.t-light {
+  background-color: $t-light-bg-lvl-5 !important;
+  color: $t-light-text-level-2 !important;
+}
 .t-select {
   min-width: 150px;
 }
@@ -63,9 +83,17 @@ a {
   color: $text-level-1;
   // transition: none;
 }
+.t-light-item-selected {
+  background: $t-light-bg-deep2 !important;
+  color: $t-light-text-level-1 !important;
+}
 .t-item-selected:hover {
   background: $bg-deep !important;
   color: $text-level-1;
+}
+.t-item-selected.t-light:hover {
+  background: $t-light-bg-lvl-2 !important;
+  color: $t-light-text-level-1 !important;
 }
 .no-padding-header .q--header-content {
   padding: 0;
@@ -77,4 +105,14 @@ a {
 .t-input-disabled {
   opacity: 0.5;
   pointer-events: none;
+}
+.t-bold {
+  font-weight: bold;
+}
+.t-disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+.t-image-invert {
+  filter: invert(1);
 }
