@@ -1,6 +1,9 @@
 <template>
   <q-dialog persistent v-model="showForm" :dark="theme === 'dark'">
-    <q-card style="min-width: 560px" :dark="theme === 'dark'">
+    <q-card
+      style="min-width: 560px; max-height: 90vh; margin-top: 8vh"
+      :dark="theme === 'dark'"
+    >
       <q-card-section>
         <div class="text-h6">
           {{
@@ -218,10 +221,6 @@ export default {
     });
     loop.start();
 
-    onBeforeUnmount(() => {
-      loop.stop();
-    });
-
     onMounted(() => {
       getCategories().then(({ data, status }) => {
         if (status === 200) {
@@ -237,6 +236,7 @@ export default {
     });
 
     EventBus.on("edit-task", (task) => {
+      newTask.value.id = task.id;
       newTask.value.title = task.title;
       newTask.value.description = task.description;
       newTask.value.priority = {
@@ -283,6 +283,12 @@ export default {
         configurations.value = val;
       }
     );
+
+    onBeforeUnmount(() => {
+      loop.stop();
+      EventBus.off("edit-task");
+      editing.value = false;
+    });
 
     return {
       theme,

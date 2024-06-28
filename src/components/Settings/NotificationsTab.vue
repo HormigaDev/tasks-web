@@ -1,5 +1,5 @@
 <template>
-  <q-tab-panel :name="name" class="flex flex-center t-settings-tab">
+  <q-tab-panel :name="name" class="flex flex-center t-settings-tab q-mb-md">
     <div class="flex flex-center column">
       <div
         :class="{
@@ -389,6 +389,12 @@
           </div>
         </div>
       </div>
+      <q-separator
+        :dark="dark"
+        width="100%"
+        class="q-mt-lg q-mb-lg"
+        :color="dark ? 'grey-9' : 'grey-10'"
+      />
     </div>
   </q-tab-panel>
 </template>
@@ -404,7 +410,7 @@ import {
 import { Sound } from "src/functions/utils";
 
 import alarmsLibrary from "src/data/settingsPage/alarmsLibrary.json";
-import sounds from "src/data/sounds.json";
+import sounds from "src/data/sounds.js";
 
 export default {
   name: "NotificationsTab",
@@ -563,7 +569,7 @@ export default {
       selectedDays,
       sounds,
       sound: new Sound(
-        "src/assets/notifications/" +
+        "public/assets/notifications/" +
           sounds.find((s) => s.id === configurations.value.notificationSound)
             ?.file,
         () => {
@@ -679,7 +685,7 @@ export default {
         return;
       } else {
         if (this.sound.isPlaying()) this.sound.stop();
-        this.sound.update("src/assets/notifications/" + file);
+        this.sound.update(file);
         this.sound.play();
         this.playingSound = true;
         this.loadingPlaySound = false;

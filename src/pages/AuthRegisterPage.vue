@@ -1,6 +1,6 @@
 <template>
   <q-page
-    class="t-login-bg"
+    :class="{ 't-login-bg': true, 't-light': theme !== 'dark' }"
     style="
       overflow-y: auto;
       max-height: 100vh;
@@ -8,18 +8,26 @@
       overflow-x: hidden;
     "
   >
-    <div class="column text-white" style="min-width: 600px">
+    <div
+      class="{'column': true, 'text-white': theme === 'dark', 'text-dark': theme !== 'dark'"
+      style="min-width: 600px"
+    >
       <div
         class="flex flex-center justify-center row"
         style="width: 100vw; height: 180px; border-radius: 50%"
       >
         <q-img
-          src="src/assets/bbel_full_logo.png"
-          style="width: 260px; height: 200px"
+          :src="logo"
+          style="width: 195px; height: 150px"
           :ratio="16 / 9"
         />
       </div>
-      <div class="text-h5 q-mb-md flex flex-center">
+      <div
+        :class="{
+          'text-h5 q-mb-md flex flex-center': true,
+          'text-dark': theme === 'dark',
+        }"
+      >
         {{ $t("pages.register.titles.register_to_continue") }}
       </div>
       <q-form
@@ -35,8 +43,8 @@
           :type="input.type"
           :error="!valids[input.error]"
           :error-message="input['error-message']"
-          dark
-          color="white"
+          :dark="theme === 'dark'"
+          :color="theme === 'dark' ? 'white' : 'dark'"
           :icon="input.icon"
           :style="`display: inline-block; width: ${input.class}; ${
             input.margin ? 'margin-left: ' + input.margin : ''
@@ -46,11 +54,17 @@
           v-model="user.phone_type"
           :options="phoneOptions"
           :label="$t('pages.register.inputs.labels.phone_type')"
-          dark
+          :dark="theme === 'dark'"
           style="width: 39%; margin-left: 1%"
-          color="white"
+          :color="theme === 'dark' ? 'white' : 'dark'"
         />
-        <small style="width: 100%">
+        <small
+          style="width: 100%"
+          :class="{
+            'text-white': theme === 'dark',
+            'text-dark': theme !== 'dark',
+          }"
+        >
           {{ $t("pages.register.messages.already_an_account") }}
           <router-link to="/auth/login">{{
             $t("pages.register.titles.login")
@@ -74,8 +88,8 @@
         dense
         v-model="lang"
         :options="langOptions"
-        color="white"
-        dark
+        :color="theme === 'dark' ? 'white' : 'dark'"
+        :dark="theme === 'dark'"
         class="q-mb-sm q-mr-sm"
         style="min-width: 140px"
         @update:model-value="changeLang($event)"
@@ -84,14 +98,27 @@
   </q-page>
 </template>
 <script>
-import { ref, defineComponent } from "vue";
+import { ref, defineComponent, onBeforeUnmount } from "vue";
 import register from "src/functions/register";
 import Cookies from "js-cookie";
 import { useRouter } from "vue-router";
 import { getConfig } from "src/functions/configs";
+import logo from "src/assets/bbel_full_logo.png";
+import { Loop } from "src/functions/utils";
+import storage from "src/functions/virtualStorage";
 
 export default defineComponent({
   data() {
+    const theme = ref(storage.get("theme") ?? "dark");
+    const loop = new Loop(() => {
+      theme.value = storage.get("theme") ?? "dark";
+    });
+    loop.start();
+
+    onBeforeUnmount(() => {
+      loop.stop();
+    });
+
     this.$i18n.locale = localStorage.getItem("lang") || "en-US";
     const router = useRouter();
     if (Cookies.get("token")) router.push("/main/tasks");
@@ -175,6 +202,8 @@ export default defineComponent({
       },
     });
     return {
+      theme,
+      logo,
       valids: ref({
         username: true,
         email: true,

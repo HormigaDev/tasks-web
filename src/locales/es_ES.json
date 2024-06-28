@@ -7,7 +7,7 @@
       "titles": {
         "tasks": "Tareas",
         "calendar": "Calendario",
-        "affairs": "Asuntos",
+        "affairs": "Apuntes",
         "settings": "Configuraciones",
         "logout": "Cerrar sesión",
         "welcome": "¡Bienvenido",
@@ -17,7 +17,8 @@
         "urgents": "Urgentes",
         "highs": "de Alta prioridad",
         "normals": "Normales",
-        "lows": "de baja prioridad"
+        "lows": "de baja prioridad",
+        "stats": "Estadísticas"
       },
       "messages": {
         "notifications_urgent": "Tiens tareas urgentes por hacer",
@@ -53,6 +54,7 @@
         "task_deleted": "Tarea eliminada",
         "erro_deleting_task": "Error al eliminar la tarea",
         "task_archived": "Tarea archivada",
+        "task_unarchived": "Tarea desarchivada",
         "task_assigned": "Tarea fijada",
         "task_unassigned": "Tarea desfijada",
         "urgent_task": "¡Esta tarea es urgente!",
@@ -81,7 +83,7 @@
           "order_by": "Ordenar por",
           "order": "Orden",
           "search_task": "Buscar tarea",
-          "show_archiveds": "Mostrar rchivadas",
+          "show_archiveds": "Mostrar archivadas",
           "show_finalizeds": "Mostrar finalizadas",
           "category_name": "Nombre de la categoría",
           "category_color": "Color de la categoría (Hexadecimal)",
@@ -173,24 +175,24 @@
     },
     "affairs": {
       "titles": {
-        "new_affair": "Nuevo asunto",
-        "edit_affair": "Editar asunto",
-        "new_affair_timeline": "Nueva línea de tiempo",
-        "edit_affair_timeline": "Editar línea de tiempo",
+        "new_affair": "Nuevo apunte",
+        "edit_affair": "Editar apunte",
+        "new_affair_timeline": "Nueva línea de tiempo de apunte",
+        "edit_affair_timeline": "Editar línea de tiempo de apunte",
         "created_at": "Creado en:",
         "last_update": "Última actualización:",
         "confirm_deletion": "Confirmar eliminación",
         "nothing_to_show": "Nada que mostrar aquí"
       },
       "messages": {
-        "confirm_delete": "¿Estás seguro de que deseas eliminar este asunto?",
-        "affair_deleted": "Asunto eliminado",
-        "affair_created": "¡Asunto creado!",
-        "affair_archived": "Asunto archivado",
-        "affair_unarchived": "Asunto desarchivado",
-        "error_deleting_affair": "Error al eliminar el asunto",
-        "affair_updated": "Asunto actualizado",
-        "error_creating_affair": "Error al crear el asunto",
+        "confirm_delete": "¿Estás seguro de que deseas eliminar este apunte?",
+        "affair_deleted": "Apunte eliminado",
+        "affair_created": "¡Apunte creado!",
+        "affair_archived": "Apunte archivado",
+        "affair_unarchived": "Apunte desarchivado",
+        "error_deleting_affair": "Error al eliminar el apunte",
+        "affair_updated": "Apunte actualizado",
+        "error_creating_affair": "Error al crear el apunte",
         "confirm_delete_timeline": "¿Estás seguro de que deseas eliminar esta línea de tiempo?",
         "timeline_deleted": "Línea de tiempo eliminada"
       },
@@ -199,8 +201,8 @@
           "show_archiveds": "Mostrar archivados",
           "order_by": "Ordenar por",
           "order": "Orden",
-          "search_affair": "Buscar asunto",
-          "affair_title": "Título del asunto",
+          "search_affair": "Buscar apunte",
+          "affair_title": "Título del apunte",
           "affair_first_timeline_description": "Descripción de la primera línea de tiempo",
           "affair_person_name": "Nombre de la persona",
           "affair_timeline_title": "Título de la línea de tiempo",
@@ -224,7 +226,7 @@
         "cancel": "Cancelar",
         "save": "Guardar",
         "update": "Actualizar",
-        "edit_affair": "Editar asunto",
+        "edit_affair": "Editar apunte",
         "delete": "Eliminar"
       }
     },
@@ -305,7 +307,8 @@
           "main_views": {
             "tasks": "Tareas",
             "calendar": "Calendario",
-            "affairs": "Asuntos"
+            "affairs": "Asuntos",
+            "stats": "Estadísticas"
           },
           "days": {
             "sun": "Domingo",
@@ -375,7 +378,7 @@
           "password": "Contraseña",
           "confirm_password": "Confirmar contraseña",
           "phone_number": "Número de Teléfono",
-          "ddd": "DDD"
+          "phone_ddd": "DDD"
         },
         "options": {
           "phone_types": {
@@ -397,6 +400,44 @@
         "labels": {
           "admin_password": "Contraseña de administrador",
           "open_dev_tools": "Abrir herramientas de desarrollo"
+        }
+      }
+    },
+    "stats": {
+      "titles": {
+        "affairs": "Apuntes",
+        "categories": "Categorías",
+        "tasks": "Tareas",
+        "user": "Usuario"
+      },
+      "inputs": {
+        "labels": {
+          "start_date": "Fecha de inicio",
+          "end_date": "Fecha de finalización"
+        },
+        "options": {
+          "affairs": {
+            "createds": "Creados",
+            "editeds": "Editados",
+            "archiveds": "Archivados",
+            "deleteds": "Eliminados"
+          },
+          "categories": {
+            "createds": "Creadas",
+            "editeds": "Editadas",
+            "deleteds": "Eliminadas"
+          },
+          "tasks": {
+            "createds": "Creadas",
+            "editeds": "Editadas",
+            "archiveds": "Archivadas",
+            "deleteds": "Eliminadas",
+            "finalizeds": "Finalizadas"
+          },
+          "user": {
+            "changed_passwords": "Contraseñas cambiadas",
+            "changed_usernames": "Nombres de usuario cambiados"
+          }
         }
       }
     }

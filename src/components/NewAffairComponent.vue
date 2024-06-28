@@ -24,7 +24,7 @@
             :color="theme === 'dark' ? 'white' : 'dark'"
             :label-color="theme === 'dark' ? 'grey-7' : 'grey-9'"
           />
-          <q-input
+          <!-- <q-input
             :dark="theme === 'dark'"
             dense
             outlined
@@ -34,7 +34,7 @@
             class="q-mt-md"
             :color="theme === 'dark' ? 'white' : 'dark'"
             :label-color="theme === 'dark' ? 'grey-7' : 'grey-9'"
-          />
+          /> -->
           <q-input
             :dark="theme === 'dark'"
             dense

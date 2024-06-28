@@ -13,7 +13,8 @@
       "urgents": "Urgentes",
       "highs": "de Alta prioridade",
       "normals": "Normais",
-      "lows": "de baixa prioridade"
+      "lows": "de baixa prioridade",
+      "stats": "Estatísticas"
     },
     "messages": {
       "notifications_urgent": "Tens tarefas urgentes para fazer",
@@ -48,6 +49,7 @@
         "task_deleted": "Tarefa excluída",
         "erro_deleting_task": "Erro ao excluir a tarefa",
         "task_archived": "Tarefa arquivada",
+        "task_unarchived": "Tarefa desarquivada",
         "task_assigned": "Tarefa fixada",
         "task_unassigned": "Tarefa desfixada",
         "urgent_task": "Esta tarefa é urgente!",
@@ -168,37 +170,37 @@
     },
     "affairs": {
       "titles": {
-        "new_affair": "Novo Assunto",
-        "edit_affair": "Editar Assunto",
-        "new_affair_timeline": "Nova Linha do Tempo",
-        "edit_affair_timeline": "Editar Linha do Tempo",
+        "new_affair": "Nova Anotação",
+        "edit_affair": "Editar Anotação",
+        "new_affair_timeline": "Nova linha do tempo da anotação",
+        "edit_affair_timeline": "Editar linha do tempo da anotação",
         "created_at": "Criado em:",
         "last_update": "Última Atualização:",
         "confirm_deletion": "Confirmar Exclusão"
       },
       "messages": {
-        "confirm_delete": "Tem certeza de que deseja excluir este assunto?",
-        "affair_deleted": "Assunto excluído",
-        "affair_created": "Assunto criado!",
-        "affair_archived": "Assunto arquivado",
-        "affair_unarchived": "Assunto desarquivado",
-        "error_deleting_affair": "Erro ao excluir o assunto",
-        "affair_updated": "Assunto atualizado",
-        "error_creating_affair": "Erro ao criar o assunto",
-        "confirm_delete_timeline": "Tem certeza de que deseja excluir esta linha do tempo?",
-        "timeline_deleted": "Linha do tempo excluída",
+        "confirm_delete": "Tem certeza de que deseja excluir esta anotação?",
+        "affair_deleted": "Anotação excluída",
+        "affair_created": "Anotação criada!",
+        "affair_archived": "Anotação arquivada",
+        "affair_unarchived": "Anotação desarquivada",
+        "error_deleting_affair": "Erro ao excluir a anotação",
+        "affair_updated": "Anotação atualizada",
+        "error_creating_affair": "Erro ao criar a anotação",
+        "confirm_delete_timeline": "Tem certeza de que deseja excluir esta linha do tempo da anotação?",
+        "timeline_deleted": "Linha do tempo da anotação excluída",
         "nothing_to_show": "Nada para mostrar por aqui"
       },
       "inputs": {
         "labels": {
-          "show_archiveds": "Mostrar Arquivados",
+          "show_archiveds": "Mostrar Arquivadas",
           "order_by": "Ordenar por",
           "order": "Ordem",
-          "search_affair": "Buscar Assunto",
-          "affair_title": "Título do Assunto",
-          "affair_first_timeline_description": "Descrição da Primeira Linha do Tempo",
+          "search_affair": "Buscar Anotação",
+          "affair_title": "Título do Anotação",
+          "affair_first_timeline_description": "Descrição da primeira linha do tempo da anotação",
           "affair_person_name": "Nome da Pessoa",
-          "affair_timeline_title": "Título da Linha do Tempo",
+          "affair_timeline_title": "Título da linha do tempo da anotação",
           "affair_timeline_description": "Descrição da Linha do Tempo",
           "archived": "Arquivado"
         },
@@ -219,7 +221,7 @@
         "cancel": "Cancelar",
         "save": "Salvar",
         "update": "Atualizar",
-        "edit_affair": "Editar Assunto",
+        "edit_affair": "Editar Anotação",
         "delete": "Excluir"
       }
     },
@@ -299,7 +301,8 @@
           "main_views": {
             "tasks": "Tarefas",
             "calendar": "Calendário",
-            "affairs": "Assuntos"
+            "affairs": "Assuntos",
+            "stats": "Estatísticas"
           },
           "days": {
             "sun": "Domingo",
@@ -369,7 +372,7 @@
           "password": "Senha",
           "confirm_password": "Confirmar senha",
           "phone_number": "Número de telefone",
-          "ddd": "DDD"
+          "phone_ddd": "DDD"
         },
         "options": {
           "phone_types": {
@@ -391,6 +394,44 @@
         "labels": {
           "admin_password": "Senha de administrador",
           "open_dev_tools": "Abrir ferramentas de desenvolvimento"
+        }
+      }
+    },
+    "stats": {
+      "titles": {
+        "affairs": "Apontamentos",
+        "categories": "Categorias",
+        "tasks": "Tarefas",
+        "user": "Usuário"
+      },
+      "inputs": {
+        "labels": {
+          "start_date": "Data de início",
+          "end_date": "Data de término"
+        },
+        "options": {
+          "affairs": {
+            "createds": "Criados",
+            "editeds": "Editados",
+            "archiveds": "Arquivados",
+            "deleteds": "Deletados"
+          },
+          "categories": {
+            "createds": "Criadas",
+            "editeds": "Editadas",
+            "deleteds": "Deletadas"
+          },
+          "tasks": {
+            "createds": "Criadas",
+            "editeds": "Editadas",
+            "archiveds": "Arquivadas",
+            "deleteds": "Deletadas",
+            "finalizeds": "Finalizadas"
+          },
+          "user": {
+            "changed_passwords": "Senhas alteradas",
+            "changed_usernames": "Nomes de usuário alterados"
+          }
         }
       }
     }

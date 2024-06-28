@@ -1,10 +1,22 @@
 <template>
-  <q-page class="t-login-bg flex flex-center">
-    <div class="column flex-center flex text-white" style="min-width: 300px">
-      <div class="flex flex-center justify-center row q-mb-md">
+  <q-page
+    :class="{
+      't-login-bg flex flex-center q-pt-none': true,
+      't-light': !dark,
+    }"
+  >
+    <div
+      :class="{
+        'column flex-center flex': true,
+        'text-white': dark,
+        'text-dark': !dark,
+      }"
+      style="min-width: 300px"
+    >
+      <div>
         <q-img
-          src="src/assets/bbel_full_logo.png"
-          style="width: 260px; height: 200px"
+          :src="logo"
+          style="width: 195px; height: 150px"
           :ratio="16 / 9"
         />
       </div>
@@ -31,8 +43,8 @@
           :label="$t('pages.login.inputs.labels.email_username')"
           type="email"
           class="full-width q-mb-md"
-          dark
-          color="white"
+          :dark="dark"
+          :color="dark ? 'white' : 'dark'"
         />
         <q-input
           outlined
@@ -40,8 +52,8 @@
           :label="$t('pages.login.inputs.labels.password')"
           type="password"
           class="full-width q-mb-md"
-          dark
-          color="white"
+          :dark="dark"
+          :color="dark ? 'white' : 'dark'"
         />
         <small>
           {{ $t("pages.login.messages.dont_have_account") }}
@@ -67,6 +79,8 @@
           "
           icon="account_circle"
           class="full-width"
+          :dark="dark"
+          :color="dark ? 'grey-8' : 'dark'"
           @click="locally = !locally"
         />
       </q-form>
@@ -78,8 +92,8 @@
         dense
         v-model="lang"
         :options="langOptions"
-        color="white"
-        dark
+        :color="dark ? 'white' : 'dark'"
+        :dark="dark"
         class="q-mb-sm q-mr-sm"
         style="min-width: 140px"
         @update:model-value="changeLang($event)"
@@ -88,19 +102,34 @@
   </q-page>
 </template>
 <script>
-import { ref, defineComponent } from "vue";
+import { ref, defineComponent, onBeforeUnmount } from "vue";
 import login from "src/functions/login";
 import Cookies from "js-cookie";
 import { useRouter } from "vue-router";
 import { getConfig } from "src/functions/configs";
+import logo from "src/assets/bbel_full_logo.png";
+import { Loop } from "src/functions/utils";
+import storage from "src/functions/virtualStorage";
 
 export default defineComponent({
   name: "AuthLoginPage",
   data() {
+    const dark = ref(storage.get("theme") === "dark");
+
+    const loop = new Loop(() => {
+      dark.value = storage.get("theme") === "dark";
+    });
+    loop.start();
+
+    onBeforeUnmount(() => {
+      loop.stop();
+    });
+
     this.$i18n.locale = localStorage.getItem("lang") ?? "en-US";
     const router = useRouter();
     if (Cookies.get("token")) router.push("/main/tasks");
     return {
+      dark,
       email_username: ref(""),
       password: ref(""),
       loading: ref(false),
@@ -108,6 +137,7 @@ export default defineComponent({
       locally: ref(false),
       lang: ref(localStorage.getItem("lang") ?? "en-US"),
       langOptions: ["en-US", "es-ES", "pt-BR"],
+      logo,
     };
   },
   methods: {

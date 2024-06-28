@@ -14,13 +14,16 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.16.4",
+    "chart.js": "^4.4.3",
     "eslint-plugin-vue": "^9.24.0",
     "howler": "^2.2.4",
     "js-cookie": "^3.0.5",
+    "markdown-it": "^14.1.0",
     "mitt": "^3.0.1",
     "pinia": "^2.1.7",
     "quasar": "^2.6.0",
     "vue": "^3.0.0",
+    "vue-chartjs": "^5.3.1",
     "vue-i18n": "^9.9.0",
     "vue-router": "^4.0.0"
   },

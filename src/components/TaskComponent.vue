@@ -11,7 +11,7 @@
       borderer
       style="min-width: 80vw; height: 100%; position: relative"
       :class="{
-        'q-pt-lg': true,
+        'q-pt-lg q-mt-lg': true,
         't-task-card': true,
         't-light': theme !== 'dark',
       }"
@@ -95,7 +95,7 @@
       <q-separator inset :dark="theme === 'dark'" />
       <q-card-section>
         <p style="white-space: pre-line; user-select: text">
-          {{ task.description }}
+          <MarkDown :markdown="task.description" :dark="theme === 'dark'" />
         </p>
       </q-card-section>
     </q-card>
@@ -108,9 +108,13 @@ import icons from "src/data/tasksPage/icons.json";
 import { editTask, deleteTask } from "src/functions/task";
 import EventBus from "src/functions/EventBus";
 import { useQuasar } from "quasar";
+import MarkDown from "./MarkDown.vue";
 
 export default {
   name: "TaskComponent",
+  components: {
+    MarkDown,
+  },
   props: {
     task: Object,
     show: Boolean,
@@ -149,7 +153,7 @@ export default {
           },
           persistent: true,
           color: "red-5",
-          dark: theme.value === 'dark',
+          dark: theme.value === "dark",
           ok: {
             label: this.$t("pages.tasks.buttons.delete"),
             color: "red-5",

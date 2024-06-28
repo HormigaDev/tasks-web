@@ -4,7 +4,7 @@
       "titles": {
         "tasks": "Tasks",
         "calendar": "Calendar",
-        "affairs": "Affairs",
+        "affairs": "Notes",
         "settings": "Settings",
         "logout": "Logout",
         "welcome": "Welcome",
@@ -14,7 +14,8 @@
         "urgents": "Urgents",
         "highs": "of high priority",
         "normals": "of normal priority",
-        "lows": "of low priority"
+        "lows": "of low priority",
+        "stats": "Statistics"
       },
       "messages": {
         "notifications_urgent": "You have urgent tasks to do",
@@ -50,6 +51,7 @@
         "task_deleted": "Task deleted",
         "erro_deleting_task": "Error deleting task",
         "task_archived": "Task archived",
+        "task_unarchived": "Task unarchived",
         "task_assigned": "Task pinned",
         "task_unassigned": "Task unpinned",
         "urgent_task": "This task is urgent!",
@@ -170,34 +172,34 @@
     },
     "affairs": {
       "titles": {
-        "new_affair": "New Affair",
-        "edit_affair": "Edit Affair",
-        "new_affair_timeline": "New Timeline",
-        "edit_affair_timeline": "Edit Timeline",
+        "new_affair": "New Note",
+        "edit_affair": "Edit Note",
+        "new_affair_timeline": "New Timeline Note",
+        "edit_affair_timeline": "Edit Timeline Note",
         "created_at": "Created At:",
         "last_update": "Last Update:",
         "confirm_deletion": "Confirm Deletion",
         "nothing_to_show": "Nothing to show here"
       },
       "messages": {
-        "confirm_delete": "Are you sure you want to delete this affair?",
-        "affair_deleted": "Affair deleted",
-        "affair_created": "Affair created!",
-        "affair_archived": "Affair archived",
-        "affair_unarchived": "Affair unarchived",
+        "confirm_delete": "Are you sure you want to delete this note?",
+        "affair_deleted": "Note deleted",
+        "affair_created": "Note created!",
+        "affair_archived": "Note archived",
+        "affair_unarchived": "Note unarchived",
         "error_deleting_affair": "Error deleting affair",
-        "affair_updated": "Affair updated",
+        "affair_updated": "Note updated",
         "error_creating_affair": "Error creating affair",
-        "confirm_delete_timeline": "Are you sure you want to delete this timeline?",
-        "timeline_deleted": "Timeline deleted"
+        "confirm_delete_timeline": "Are you sure you want to delete this timeline note?",
+        "timeline_deleted": "Timeline note deleted"
       },
       "inputs": {
         "labels": {
           "show_archiveds": "Show Archived",
           "order_by": "Order By",
           "order": "Order",
-          "search_affair": "Search Affair",
-          "affair_title": "Affair Title",
+          "search_affair": "Search Note",
+          "affair_title": "Note Title",
           "affair_first_timeline_description": "First Timeline Description",
           "affair_person_name": "Person Name",
           "affair_timeline_title": "Timeline Title",
@@ -221,7 +223,7 @@
         "cancel": "Cancel",
         "save": "Save",
         "update": "Update",
-        "edit_affair": "Edit Affair",
+        "edit_affair": "Edit Note",
         "delete": "Delete"
       }
     },
@@ -301,7 +303,8 @@
           "main_views": {
             "tasks": "Tasks",
             "calendar": "Calendar",
-            "affairs": "Affairs"
+            "affairs": "Affairs",
+            "stats": "Statistics"
           },
           "days": {
             "sun": "Sunday",
@@ -371,7 +374,7 @@
           "password": "Password",
           "confirm_password": "Confirm password",
           "phone_number": "Phone number",
-          "ddd": "DDD"
+          "phone_ddd": "DDD"
         },
         "options": {
           "phone_types": {
@@ -393,6 +396,44 @@
         "labels": {
           "admin_password": "Admin password",
           "open_dev_tools": "Open developer tools"
+        }
+      }
+    },
+    "stats": {
+      "titles": {
+        "affairs": "Notes",
+        "categories": "Categories",
+        "tasks": "Tasks",
+        "user": "User"
+      },
+      "inputs": {
+        "labels": {
+          "start_date": "Start date",
+          "end_date": "End date"
+        },
+        "options": {
+          "affairs": {
+            "createds": "Createds",
+            "editeds": "Editeds",
+            "archiveds": "Archiveds",
+            "deleteds": "Deleteds"
+          },
+          "categories": {
+            "createds": "Createds",
+            "editeds": "Editeds",
+            "deleteds": "Deleteds"
+          },
+          "tasks": {
+            "createds": "Createds",
+            "editeds": "Editeds",
+            "archiveds": "Archiveds",
+            "deleteds": "Deleteds",
+            "finalizeds": "Finalizeds"
+          },
+          "user": {
+            "changed_passwords": "Changed passwords",
+            "changed_usernames": "Changed usernames"
+          }
         }
       }
     }

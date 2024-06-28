@@ -5,6 +5,7 @@
 html,
 body {
   background: $bg-lvl-5;
+  overflow-y: hidden;
 }
 html.t-light,
 body.t-light {
@@ -73,6 +74,26 @@ a {
 .t-select {
   min-width: 150px;
 }
+// le ponemos region drag para que en electron pueda mover la ventana
+.t-app-bar-light {
+  background-color: $t-light-bg-lvl-1;
+  color: $t-light-text-level-1;
+}
+.t-app-bar-dark {
+  background-color: $bg-deep2;
+  color: $text-level-2;
+}
+.t-app-dragregion {
+  -webkit-app-region: drag;
+  height: 100%;
+  cursor: move;
+  width: 50%;
+}
+.t-chart-container {
+  min-height: 300px;
+  max-height: 300px;
+}
+
 @media screen and (max-width: 992px) {
   .t-select {
     min-width: 50px !important;

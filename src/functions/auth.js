@@ -42,3 +42,11 @@ export async function ignoreNotification(notification_id, priority_name) {
   // console.log(data.message);
   return { data, status };
 }
+
+export async function getStats(dateStart, dateEnd) {
+  const { data, status } = await API.get(
+    `/user-stats?dateStart=${dateStart}&dateEnd=${dateEnd}`
+  );
+  // console.log(data);
+  return { data, status };
+}

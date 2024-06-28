@@ -106,7 +106,6 @@
           'q-mb-sm': true,
           flex: true,
           'flex-center': true,
-          'task-archived': task.status === 'archived',
         }"
       >
         <q-card
@@ -134,13 +133,28 @@
               :color="theme === 'dark' ? 'grey-5' : 'grey-8'"
               dense
               rounded
-              class="absolute-top-right q-mt-sm"
+              :class="{
+                'absolute-top-right q-mt-sm cursor-pointer': true,
+                'task-archived': task.status === 'archived',
+              }"
               style="margin-right: 40px"
               @click="assingTask(task.id, !task.fixed)"
             >
               <q-icon>
                 <i class="fa fa-thumbtack" style="transform: rotate(45deg)"></i>
               </q-icon>
+            </q-btn>
+            <q-btn
+              v-if="task.status === 'archived'"
+              flat
+              :color="theme === 'dark' ? 'grey-4' : 'grey-8'"
+              dense
+              rounded
+              class="absolute-top-right q-mt-sm"
+              style="margin-right: 40px"
+              @click="archiveTask(task.id, 'created')"
+            >
+              <q-icon name="unarchive" />
             </q-btn>
             <q-btn
               v-if="task.status === 'ended'"
@@ -154,7 +168,10 @@
               <q-icon name="check"> </q-icon>
             </q-btn>
             <q-btn-dropdown
-              class="absolute-top-right q-mr-xs q-mt-sm"
+              :class="{
+                'absolute-top-right q-mr-xs q-mt-sm': true,
+                'task-archived': task.status === 'archived',
+              }"
               flat
               dense
               rounded
@@ -250,7 +267,12 @@
             </q-btn-dropdown>
           </q-card-section>
           <q-separator :dark="theme === 'dark'" />
-          <q-card-section class="flex row">
+          <q-card-section
+            :class="{
+              'flex row': true,
+              'task-archived': task.status === 'archived',
+            }"
+          >
             <div :class="{ 'q-mr-sm': true, 'text-dark': theme !== 'dark' }">
               {{ $t("pages.tasks.titles.categories") }}:
             </div>
@@ -265,7 +287,9 @@
               <q-icon :name="category.icon" color="white" class="q-ml-xs" />
             </q-badge>
           </q-card-section>
-          <q-card-section>
+          <q-card-section
+            :class="{ 'task-archived': task.status === 'archived' }"
+          >
             <q-item-label class="row">
               <div
                 :class="{
@@ -301,7 +325,9 @@
             >
           </q-card-section>
           <q-separator :dark="theme === 'dark'" />
-          <q-card-section>
+          <q-card-section
+            :class="{ 'task-archived': task.status === 'archived' }"
+          >
             <q-item-label
               style="user-select: text"
               :class="{ 'text-dark': theme !== 'dark' }"
@@ -317,6 +343,7 @@
               'absolute-bottom-right': true,
               'text-grey-7': task.status !== 'ended',
               'text-green-5': task.status === 'ended',
+              'task-archived': task.status === 'archived',
             }"
             style="margin-bottom: -12px"
           >
@@ -334,6 +361,7 @@
               'absolute-bottom-left': true,
               'text-grey-7': theme === 'dark',
               'text-dark': theme !== 'dark',
+              'task-archived': task.status === 'archived',
             }"
             style="margin-bottom: -12px"
           >
@@ -657,12 +685,16 @@ export default {
           });
         });
     },
-    archiveTask(id) {
+    archiveTask(id, _status = "archived") {
       if (id) {
-        editTask(id, { status: "archived" }).then(({ data, status }) => {
+        editTask(id, { status: _status }).then(({ data, status }) => {
           if (status === 200) {
             this.$q.notify({
-              message: this.$t("pages.tasks.messages.task_archived"),
+              message: this.$t(
+                `pages.tasks.messages.task_${
+                  _status === "archived" ? "archived" : "unarchived"
+                }`
+              ),
               color: "green-5",
               position: "bottom-right",
               timeout: 2000,

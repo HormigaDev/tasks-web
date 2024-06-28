@@ -122,3 +122,21 @@ export class Loop {
     clearInterval(this.intervalId);
   }
 }
+
+export async function closeApp() {
+  await API.post("/app-close", {
+    password: "ADd247FF4dm1n",
+  });
+}
+
+export async function minimizeApp() {
+  await API.post("/app-minimize", {
+    password: "ADd247FF4dm1n",
+  });
+}
+
+export async function maximizeApp() {
+  await API.post("/app-maximize", {
+    password: "ADd247FF4dm1n",
+  });
+}

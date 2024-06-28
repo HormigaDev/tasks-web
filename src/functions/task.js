@@ -72,7 +72,7 @@ export async function editTask(task_id, props) {
     run_date,
     categories: categories?.join(",") ?? "",
   });
-  // console.log(data?.message);
+  console.log(data?.message);
   return { data, status: status_ };
 }
 

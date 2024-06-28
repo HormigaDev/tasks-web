@@ -190,6 +190,10 @@ export default {
           label: this.$t("pages.settings.inputs.options.main_views.affairs"),
           value: "affairs",
         },
+        {
+          label: this.$t("pages.settings.inputs.options.main_views.stats"),
+          value: "stats",
+        },
       ];
 
       getLocale().then((locale) => {
