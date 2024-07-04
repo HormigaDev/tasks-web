@@ -203,6 +203,7 @@ export default {
         };
       });
       EventBus.emit("edit-task", task);
+      console.log(task);
       this.$emit("update:edittask", false);
     },
     confirm(id) {

@@ -116,13 +116,7 @@
           >
             <div class="text-h6">{{ affair.title }}</div>
           </q-card-section>
-          <q-card-section class="col-2 flex flex-center">
-            <div
-              :class="{ 'text-center': true, 'text-bold': theme !== 'dark' }"
-            >
-              {{ affair.personName }}
-            </div>
-          </q-card-section>
+          <q-card-section class="col-2 flex flex-center"> </q-card-section>
           <q-card-section
             :class="{
               'col-2': true,

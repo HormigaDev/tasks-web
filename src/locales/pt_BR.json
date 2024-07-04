@@ -1,26 +1,31 @@
 {
   "layouts": {
-    "titles": {
-      "tasks": "Tarefas",
-      "calendar": "Calendário",
-      "affairs": "Assuntos",
-      "settings": "Configurações",
-      "logout": "Sair",
-      "welcome": "Bem-vindo",
-      "notifications": "Notificações",
-      "noNotifications": "Sem notificações",
-      "dismiss": "Dispensar",
-      "urgents": "Urgentes",
-      "highs": "de Alta prioridade",
-      "normals": "Normais",
-      "lows": "de baixa prioridade",
-      "stats": "Estatísticas"
-    },
-    "messages": {
-      "notifications_urgent": "Tens tarefas urgentes para fazer",
-      "notifications_high": "Tens arefas de alta prioridade para fazer",
-      "notifications_normal": "Tens arefas para fazer",
-      "notifications_low": "Tens arefas para fazer"
+    "main": {
+      "words": {
+        "have": "Tens"
+      },
+      "titles": {
+        "tasks": "Tarefas",
+        "calendar": "Calendário",
+        "affairs": "Assuntos",
+        "settings": "Configurações",
+        "logout": "Sair",
+        "welcome": "Bem-vindo",
+        "notifications": "Notificações",
+        "noNotifications": "Sem notificações",
+        "dismiss": "Dispensar",
+        "urgents": "Urgentes",
+        "highs": "de Alta prioridade",
+        "normals": "Normais",
+        "lows": "de baixa prioridade",
+        "stats": "Estatísticas"
+      },
+      "messages": {
+        "notifications_urgent": "Tens tarefas urgentes para fazer",
+        "notifications_high": "Tens arefas de alta prioridade para fazer",
+        "notifications_normal": "Tens arefas para fazer",
+        "notifications_low": "Tens arefas para fazer"
+      }
     }
   },
   "pages": {
@@ -176,6 +181,7 @@
         "edit_affair_timeline": "Editar linha do tempo da anotação",
         "created_at": "Criado em:",
         "last_update": "Última Atualização:",
+        "nothing_to_show": "Nada para mostrar por aqui",
         "confirm_deletion": "Confirmar Exclusão"
       },
       "messages": {
@@ -188,8 +194,7 @@
         "affair_updated": "Anotação atualizada",
         "error_creating_affair": "Erro ao criar a anotação",
         "confirm_delete_timeline": "Tem certeza de que deseja excluir esta linha do tempo da anotação?",
-        "timeline_deleted": "Linha do tempo da anotação excluída",
-        "nothing_to_show": "Nada para mostrar por aqui"
+        "timeline_deleted": "Linha do tempo da anotação excluída"
       },
       "inputs": {
         "labels": {

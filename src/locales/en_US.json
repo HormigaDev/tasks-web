@@ -1,6 +1,9 @@
 {
   "layouts": {
     "main": {
+      "words": {
+        "have": "have"
+      },
       "titles": {
         "tasks": "Tasks",
         "calendar": "Calendar",

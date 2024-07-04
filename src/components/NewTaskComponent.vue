@@ -169,10 +169,10 @@ export default {
     const showForm = ref(props.show);
     const now = new Date();
 
-    let [year, month, day] = storage.get("current_date")?.split("-") ?? [
-      "2000",
-      "01",
-      "01",
+    let [year, month, day] = [
+      now.getFullYear() + "",
+      ("" + now.getMonth() + 1).slice(-2),
+      ("" + now.getDate()).slice(-2),
     ];
     const today = ref(
       storage.get("current_date")?.split("-").join("/") ??
@@ -212,6 +212,7 @@ export default {
     });
 
     const loop = new Loop(() => {
+      if (editing.value) return;
       const date = storage.get("current_date");
       if (date) {
         let [year, month, day] = date.split("-");

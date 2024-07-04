@@ -120,7 +120,11 @@
               row: true,
             }"
           >
-            <q-item-label style="font-size: 13px">
+            <q-item-label
+              style="font-size: 13px"
+              @click="showTask(task)"
+              class="cursor-pointer"
+            >
               {{
                 task.title.length > 40
                   ? task.title.substring(0, 40) + "..."
@@ -735,6 +739,7 @@ export default {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 24px 64px;
+  overflow-x: hidden;
 }
 .task-archived {
   opacity: 0.5;
