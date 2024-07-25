@@ -224,12 +224,17 @@ export default {
       search: "",
       showArchiveds: false,
       order_by: {
-        label: this.$t("pages.affairs.inputs.options.orders_by.created_at"),
-        value: "created_at",
+        label:
+          localStorage.getItem("default_a_orders_by") ??
+          this.$t("pages.affairs.inputs.options.orders_by.created_at"),
+        value:
+          localStorage.getItem("default_a_orders_by_value") ?? "created_at",
       },
       asc_desc: {
-        label: this.$t("pages.affairs.inputs.options.orders.asc"),
-        value: "asc",
+        label:
+          localStorage.getItem("default_a_orders") ??
+          this.$t("pages.affairs.inputs.options.orders.asc"),
+        value: localStorage.getItem("default_a_orders_value") ?? "asc",
       },
     });
 
@@ -393,6 +398,16 @@ export default {
         });
     },
     filterAffairs(keepPage = false) {
+      localStorage.setItem("default_a_orders_by", this.filters.order_by.label);
+      localStorage.setItem(
+        "default_a_orders_by_value",
+        this.filters.order_by.value
+      );
+      localStorage.setItem("default_a_orders", this.filters.asc_desc.label);
+      localStorage.setItem(
+        "default_a_orders_value",
+        this.filters.asc_desc.value
+      );
       if (!keepPage) {
         this.filters.page = 1;
       }

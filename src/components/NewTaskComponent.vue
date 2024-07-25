@@ -319,6 +319,7 @@ export default {
       this.newTask.realDate = `${year}-${month}-${day}`;
       this.newTask.date = `${day}/${month}/${year}`;
       this.showCalendar = false;
+      storage.set("current_date", this.newTask.realDate);
     },
     saveNewTask() {
       if (!this.rules.title.exp.test(this.newTask.title)) {
@@ -425,7 +426,8 @@ export default {
         });
         return;
       }
-      const categories = this.newTask.categories.map((c) => c.value);
+      let categories = this.newTask.categories;
+      categories = categories.map((c) => c.value);
       const priority = this.newTask.priority.value;
       editTask(this.newTask.id, {
         title: this.newTask.title,

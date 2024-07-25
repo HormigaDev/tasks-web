@@ -194,7 +194,9 @@
         "affair_updated": "Anotação atualizada",
         "error_creating_affair": "Erro ao criar a anotação",
         "confirm_delete_timeline": "Tem certeza de que deseja excluir esta linha do tempo da anotação?",
-        "timeline_deleted": "Linha do tempo da anotação excluída"
+        "timeline_deleted": "Linha do tempo da anotação excluída",
+        "missing_description": "A descrição é obrigatória",
+        "title_length": "O título deve ter entre 12 e 100 caracteres"
       },
       "inputs": {
         "labels": {

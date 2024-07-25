@@ -21,9 +21,9 @@
           dense
           flat
           round
-          :icon="task.status === 'ended' ? 'settings_backup_restore' : 'check'"
+          :icon="$task.status === 'ended' ? 'settings_backup_restore' : 'check'"
           class="q-mt-sm"
-          @click="finalizeTask(task.id, task.status === 'created')"
+          @click="finalizeTask($task.id, $task.status === 'created')"
         />
         <q-btn
           dense
@@ -31,7 +31,7 @@
           round
           icon="edit"
           class="q-mt-md"
-          @click="editTask(task)"
+          @click="editTask($task)"
         />
         <q-btn
           dense
@@ -40,7 +40,7 @@
           icon="delete"
           class="q-mt-md"
           color="red-5"
-          @click="confirmDelete(task.id, confirm)"
+          @click="confirmDelete($task.id, confirm)"
         />
       </div>
       <q-card-section>
@@ -54,22 +54,22 @@
             'text-dark': theme !== 'dark',
           }"
         >
-          <div :class="task.status === 'ended' ? 'text-green' : ''">
-            {{ task.title }}
+          <div :class="$task.status === 'ended' ? 'text-green' : ''">
+            {{ $task.title }}
           </div>
           <q-icon
-            :title="task.priority.name"
-            :name="icons[task.priority.name].name"
-            :color="icons[task.priority.name].color"
+            :title="$task.priority.name"
+            :name="icons[$task.priority.name].name"
+            :color="icons[$task.priority.name].color"
             class="q-ml-sm"
             size="sm"
-            v-if="task.status !== 'ended'"
+            v-if="$task.status !== 'ended'"
           />
           <q-icon name="check" style="color: green" class="q-ml-sm" v-else />
         </div>
         <div>
           <q-badge
-            v-for="(category, key) in task.categories"
+            v-for="(category, key) in $task.categories"
             :key="key"
             :label="category.name"
             :style="'background-color: #' + category.color + ' !important'"
@@ -94,8 +94,20 @@
       />
       <q-separator inset :dark="theme === 'dark'" />
       <q-card-section>
-        <p style="white-space: pre-line; user-select: text">
-          <MarkDown :markdown="task.description" :dark="theme === 'dark'" />
+        <p
+          style="
+            white-space: pre-line;
+            user-select: text !important;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            white-space: normal;
+          "
+        >
+          <MarkDown
+            :markdown="$task.description"
+            :dark="theme === 'dark'"
+            style="user-select: text !important"
+          />
         </p>
       </q-card-section>
     </q-card>
@@ -125,6 +137,7 @@ export default {
     const theme = ref(props._theme);
     const $q = useQuasar();
     const showModal = ref(props.show);
+    const tsk = ref(props.task);
 
     watch(
       () => props.show,
@@ -138,7 +151,14 @@ export default {
         theme.value = val;
       }
     );
+    watch(
+      () => props.task,
+      (val) => {
+        tsk.value = val;
+      }
+    );
     return {
+      $task: tsk,
       theme,
       showModal,
       categories,

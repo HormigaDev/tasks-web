@@ -165,6 +165,24 @@ export default {
         });
         return;
       }
+      if (this.newAffair.title?.length < 12) {
+        this.$q.notify({
+          message: this.$t("pages.affairs.messages.title_length"),
+          color: "red-5",
+          position: "bottom-right",
+          timeout: 2000,
+        });
+        return;
+      }
+      if (!this.newAffair.description) {
+        this.$q.notify({
+          message: this.$t("pages.affairs.messages.missing_description"),
+          color: "red-5",
+          position: "bottom-right",
+          timeout: 2000,
+        });
+        return;
+      }
       newAffair(
         this.newAffair.title,
         this.newAffair.personName,

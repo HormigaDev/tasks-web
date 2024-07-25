@@ -343,7 +343,23 @@ export default defineComponent({
     },
     getColor(date, status) {
       if (status === "ended") return "green-5";
-      let now = new Date().toISOString().split("T")[0];
+      let now = new Date();
+      now = `${now.getFullYear()}-${("0" + (now.getMonth() + 1)).slice(-2)}-${(
+        "0" + now.getDate()
+      ).slice(-2)}`;
+      date = date.split(" ")[0].split("T")[0];
+      date = date.split("-");
+      date = new Date(
+        `${date[0]}-${date[1]}-${("0" + (Number(date[2]) + 1)).slice(-2)}`
+      );
+      date = `${date.getFullYear()}-${("0" + (date.getMonth() + 1)).slice(
+        -2
+      )}-${("0" + date.getDate()).slice(-2)}`;
+
+      // date = new Date(date);
+      // now = new Date(now);
+      console.log("DATE", date);
+      console.log("NOW", now);
       if (date < now) return "red-5";
       if (date > now) return "blue-5";
       return "orange-5";

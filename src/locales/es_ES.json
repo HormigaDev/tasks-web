@@ -194,7 +194,9 @@
         "affair_updated": "Apunte actualizado",
         "error_creating_affair": "Error al crear el apunte",
         "confirm_delete_timeline": "¿Estás seguro de que deseas eliminar esta línea de tiempo?",
-        "timeline_deleted": "Línea de tiempo eliminada"
+        "timeline_deleted": "Línea de tiempo eliminada",
+        "missing_description": "La descripción debe tener entre 20 y 5000 caracteres",
+        "title_length": "El título debe tener entre 12 y 100 caracteres"
       },
       "inputs": {
         "labels": {

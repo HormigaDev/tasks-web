@@ -333,11 +333,16 @@
             :class="{ 'task-archived': task.status === 'archived' }"
           >
             <q-item-label
-              style="user-select: text"
+              style="
+                user-select: text;
+                overflow-wrap: break-word; /* Permite que el texto se divida en múltiples líneas */
+                word-wrap: break-word; /* Soporte para navegadores más antiguos */
+                white-space: normal;
+              "
               :class="{ 'text-dark': theme !== 'dark' }"
               >{{
-                task.description.length > 240
-                  ? task.description.substring(0, 240) + "..."
+                task.description.length > 230
+                  ? task.description.substring(0, 230) + "..."
                   : task.description
               }}</q-item-label
             >
@@ -450,16 +455,22 @@ export default {
     const categories = ref([]);
     const filters = ref({
       priority: {
-        label: this.$t("pages.tasks.inputs.options.priorities.all"),
-        value: 0,
+        label:
+          localStorage.getItem("default_priority") ??
+          this.$t(`pages.tasks.inputs.options.priorities.all`),
+        value: localStorage.getItem("default_priority_value") ?? 0,
       },
       order_by: {
-        label: this.$t("pages.tasks.inputs.options.orders_by.run_date"),
-        value: "run_date",
+        label:
+          localStorage.getItem("default_order_by") ??
+          this.$t(`pages.tasks.inputs.options.orders_by.run_date`),
+        value: localStorage.getItem("default_order_by_value") ?? "run_date",
       },
       asc_desc: {
-        label: this.$t("pages.tasks.inputs.options.orders.asc"),
-        value: "asc",
+        label:
+          localStorage.getItem("default_asc_desc") ??
+          this.$t(`pages.tasks.inputs.options.orders.asc`),
+        value: localStorage.getItem("default_asc_desc_value") ?? "asc",
       },
       page: 1,
       categories: [],
@@ -517,9 +528,6 @@ export default {
     loop.start();
 
     //!! dimounting component
-    onBeforeUnmount(() => {
-      loop.stop();
-    });
 
     EventBus.on("task-added", () => {
       getTasks(
@@ -546,6 +554,13 @@ export default {
     });
     EventBus.on("task-updated", () => {
       actualizeTasks();
+    });
+    onBeforeUnmount(() => {
+      loop.stop();
+      EventBus.off("task-added");
+      EventBus.off("show-fixed-tasks");
+      EventBus.off("filter-by-category");
+      EventBus.off("task-updated");
     });
 
     const $q = useQuasar();
@@ -660,6 +675,12 @@ export default {
       this.$emit("update:newcategory", true);
     },
     newTask() {
+      let date = new Date();
+      date = `${date.getFullYear()}-${("0" + (date.getMonth() + 1)).slice(
+        -2
+      )}-${("0" + date.getDate()).slice(-2)}`;
+      console.log(date);
+      storage.set("current_date", date);
       this.$emit("update:newtask", true);
     },
     deleteTask(id) {
@@ -711,6 +732,22 @@ export default {
       this.$emit("update:showtask", task);
     },
     filterTasks() {
+      localStorage.setItem("default_priority", this.filters.priority.label);
+      localStorage.setItem(
+        "default_priority_value",
+        this.filters.priority.value
+      );
+      localStorage.setItem("default_order_by", this.filters.order_by.label);
+      localStorage.setItem(
+        "default_order_by_value",
+        this.filters.order_by.value
+      );
+      localStorage.setItem("default_asc_desc", this.filters.asc_desc.label);
+      localStorage.setItem(
+        "default_asc_desc_value",
+        this.filters.asc_desc.value
+      );
+
       this.actualizeTasks();
     },
     assingTask(id, on_off) {

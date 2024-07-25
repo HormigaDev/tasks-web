@@ -194,7 +194,9 @@
         "affair_updated": "Note updated",
         "error_creating_affair": "Error creating affair",
         "confirm_delete_timeline": "Are you sure you want to delete this timeline note?",
-        "timeline_deleted": "Timeline note deleted"
+        "timeline_deleted": "Timeline note deleted",
+        "missing_description": "The description must be between 20 and 5000 characters",
+        "title_length": "The title must be between 12 and 100 characters"
       },
       "inputs": {
         "labels": {
